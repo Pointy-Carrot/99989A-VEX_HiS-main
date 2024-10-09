@@ -145,9 +145,9 @@ void red_qual_left(){
     red = true;
     chassis.setPose(-56, 12, 0);
     chassis.moveToPoint(-56, -6, 750, {.forwards = false});
-    chassis.moveToPoint(-56, 0, 500);
+    chassis.moveToPoint(-56, 1, 500);
     chassis.turnToHeading(90, 500);
-    chassis.moveToPoint(-63, 0, 500, {.forwards = false});
+    chassis.moveToPoint(-62, 1, 500, {.forwards = false});
     chassis.turnToHeading(85, 250);
     chassis.waitUntilDone();
     intake.move(127);
@@ -155,7 +155,7 @@ void red_qual_left(){
     intake.move(0);
     // pick up mogo
     chassis.swingToHeading(0, lemlib::DriveSide::LEFT, 750);
-    chassis.moveToPoint(-56, 18, 1000);
+    chassis.moveToPoint(-56, 14, 1000);
     chassis.turnToPoint(-24, 21, 750, {.forwards = false});
     chassis.moveToPoint(-24, 21, 1000, {.forwards = false});
     chassis.waitUntilDone();
@@ -184,7 +184,49 @@ void red_qual_left(){
     chassis.moveToPoint(-24, 6, 2000);
 }
 void red_qual_right(){}
-void red_elim_left(){}
+void red_elim_left(){
+    // score preload on alliance stake
+    red = true;
+    chassis.setPose(-56, 12, 0);
+    chassis.moveToPoint(-56, -6, 750, {.forwards = false});
+    chassis.moveToPoint(-56, 1, 500);
+    chassis.turnToHeading(90, 500);
+    chassis.moveToPoint(-62, 1, 500, {.forwards = false});
+    chassis.turnToHeading(85, 250);
+    chassis.waitUntilDone();
+    intake.move(127);
+    pros::delay(500);
+    intake.move(0);
+    // pick up mogo
+    chassis.swingToHeading(0, lemlib::DriveSide::LEFT, 750);
+    chassis.moveToPoint(-56, 14, 1000);
+    chassis.turnToPoint(-24, 21, 750, {.forwards = false});
+    chassis.moveToPoint(-24, 21, 1000, {.forwards = false});
+    chassis.waitUntilDone();
+    mogo_mech.set_value(true);
+    pros::delay(125);
+    // score ring 1
+    chassis.turnToPoint(-24, 48, 500);
+    chassis.moveToPoint(-24, 48, 500);
+    intake.move(127);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    // score ring 2
+    chassis.turnToPoint(-10, 44, 500);
+    chassis.moveToPoint(-10, 44, 1000);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    // scoring ring 3
+    chassis.moveToPoint(-24, 48, 1000, {.forwards = false});
+    chassis.turnToPoint(-10, 50, 500);
+    chassis.moveToPoint(-10, 50, 1000);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    // touching elevation structure
+    chassis.moveToPoint(-24, 48, 1000, {.forwards = false});
+    chassis.turnToHeading(180, 500);
+    chassis.moveToPoint(-24, 6, 2000);
+}
 void red_elim_right(){}
 void blue_qual_left(){}
 void blue_qual_right(){}
