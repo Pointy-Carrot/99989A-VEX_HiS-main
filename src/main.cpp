@@ -145,43 +145,42 @@ void red_qual_left(){
     red = true;
     chassis.setPose(-56, 12, 0);
     chassis.moveToPoint(-56, -6, 750, {.forwards = false});
-    chassis.moveToPoint(-56, 1, 500);
+    chassis.moveToPoint(-56, -1, 500);
     chassis.turnToHeading(90, 500);
-    chassis.moveToPoint(-62, 1, 500, {.forwards = false});
-    chassis.turnToHeading(85, 250);
+    chassis.moveToPoint(-62, -1, 500, {.forwards = false});
+    chassis.turnToHeading(92, 500);
     chassis.waitUntilDone();
     intake.move(127);
     pros::delay(500);
     intake.move(0);
     // pick up mogo
     chassis.swingToHeading(0, lemlib::DriveSide::LEFT, 750);
-    chassis.moveToPoint(-56, 14, 1000);
     chassis.turnToPoint(-24, 21, 750, {.forwards = false});
-    chassis.moveToPoint(-24, 21, 1000, {.forwards = false});
+    chassis.moveToPose(-20, 24, 240, 1500, {.forwards = false, .minSpeed = 70});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
     pros::delay(125);
     // score ring 1
-    chassis.turnToPoint(-24, 48, 500);
-    chassis.moveToPoint(-24, 48, 500);
+    chassis.turnToPoint(-26, 42, 500);
+    chassis.moveToPoint(-26, 42, 500);
     intake.move(127);
     chassis.waitUntilDone();
     pros::delay(250);
     // score ring 2
-    chassis.turnToPoint(-10, 44, 500);
-    chassis.moveToPoint(-10, 44, 1000);
+    chassis.turnToPoint(-10, 42, 500);
+    chassis.moveToPoint(-10, 42, 1000);
     chassis.waitUntilDone();
     pros::delay(250);
     // scoring ring 3
     chassis.moveToPoint(-24, 48, 1000, {.forwards = false});
-    chassis.turnToPoint(-10, 50, 500);
-    chassis.moveToPoint(-10, 50, 1000);
+    chassis.turnToPoint(-8, 50, 500);
+    chassis.moveToPoint(-8, 50, 1000);
     chassis.waitUntilDone();
     pros::delay(250);
     // touching elevation structure
     chassis.moveToPoint(-24, 48, 1000, {.forwards = false});
     chassis.turnToHeading(180, 500);
-    chassis.moveToPoint(-24, 6, 2000);
+    chassis.moveToPoint(-24, 4, 2000);
 }
 void red_qual_right(){
     // score preload on alliance stake
@@ -233,43 +232,42 @@ void red_elim_left(){
     red = true;
     chassis.setPose(-56, 12, 0);
     chassis.moveToPoint(-56, -6, 750, {.forwards = false});
-    chassis.moveToPoint(-56, 1, 500);
+    chassis.moveToPoint(-56, -1, 500);
     chassis.turnToHeading(90, 500);
-    chassis.moveToPoint(-62, 1, 500, {.forwards = false});
-    chassis.turnToHeading(85, 250);
+    chassis.moveToPoint(-62, -1, 500, {.forwards = false});
+    chassis.turnToHeading(92, 500);
     chassis.waitUntilDone();
     intake.move(127);
     pros::delay(500);
     intake.move(0);
     // pick up mogo
     chassis.swingToHeading(0, lemlib::DriveSide::LEFT, 750);
-    chassis.moveToPoint(-56, 14, 1000);
     chassis.turnToPoint(-24, 21, 750, {.forwards = false});
-    chassis.moveToPoint(-24, 21, 1000, {.forwards = false});
+    chassis.moveToPose(-20, 24, 240, 1500, {.forwards = false, .minSpeed = 70});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
     pros::delay(125);
     // score ring 1
-    chassis.turnToPoint(-24, 48, 500);
-    chassis.moveToPoint(-24, 48, 500);
+    chassis.turnToPoint(-26, 42, 500);
+    chassis.moveToPoint(-26, 42, 500);
     intake.move(127);
     chassis.waitUntilDone();
     pros::delay(250);
     // score ring 2
-    chassis.turnToPoint(-10, 44, 500);
-    chassis.moveToPoint(-10, 44, 1000);
-    chassis.waitUntilDone();
-    pros::delay(750);
-    // score ring 3
-    chassis.moveToPoint(-24, 48, 1000, {.forwards = false});
-    chassis.turnToPoint(-10, 50, 500);
-    chassis.moveToPoint(-10, 50, 1000);
+    chassis.turnToPoint(-10, 42, 500);
+    chassis.moveToPoint(-10, 42, 1000);
     chassis.waitUntilDone();
     pros::delay(250);
-    // touch elevation structure
+    // scoring ring 3
+    chassis.moveToPoint(-24, 48, 1000, {.forwards = false});
+    chassis.turnToPoint(-8, 50, 500);
+    chassis.moveToPoint(-8, 50, 1000);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    // touching elevation structure
     chassis.moveToPoint(-24, 48, 1000, {.forwards = false});
     chassis.turnToHeading(180, 500);
-    chassis.moveToPoint(-24, 6, 2000);
+    chassis.moveToPoint(-24, 4, 2000);
 }
 void red_elim_right(){}
 void blue_qual_left(){}
@@ -432,7 +430,7 @@ void competition_initialize() {}
  */
 void autonomous() {
     auto_started = true;
-    red_qual_right();
+    red_qual_left();
     // switch(auton_selected) {
     //     case 1:
     //         red_qual_left();
