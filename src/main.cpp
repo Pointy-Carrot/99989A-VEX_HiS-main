@@ -183,14 +183,12 @@ void red_qual_left(){
     chassis.moveToPoint(-24, 4, 2000);
 }
 void red_qual_right(){
-    // score preload on alliance stake
-    red = true;
-    chassis.setPose(-56, -12, 180);
+chassis.setPose(-56, 12, 0);
     chassis.moveToPoint(-56, 6, 750, {.forwards = false});
-    chassis.moveToPoint(-56, -2, 500);
+    chassis.moveToPoint(-56, 1, 500);
     chassis.turnToHeading(90, 500);
-    chassis.moveToPoint(-66.5, chassis.getPose().y, 500, {.forwards = false});
-    chassis.turnToHeading(110, 500);
+    chassis.moveToPoint(-62, 1, 500, {.forwards = false});
+    chassis.turnToHeading(88, 500);
     chassis.waitUntilDone();
     intake.move(127);
     pros::delay(500);
@@ -430,7 +428,7 @@ void competition_initialize() {}
  */
 void autonomous() {
     auto_started = true;
-    red_qual_left();
+    red_qual_right();
     // switch(auton_selected) {
     //     case 1:
     //         red_qual_left();
