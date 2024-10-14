@@ -13,22 +13,22 @@ ASSET(path1_txt);
 // config
 pros::adi::AnalogIn selector_knob('B');
 pros::adi::DigitalIn selector_switch('D');
-pros::Rotation vert_tracker(16);
-pros::Rotation arm_rot(10);
-pros::Optical sorter(11);
-pros::Rotation hooks_rot(-12);
+pros::Rotation vert_tracker(11);
+pros::Rotation arm_rot(19);
+pros::Optical sorter(21);
+pros::Rotation hooks_rot(-20);
 
-pros::adi::DigitalOut mogo_mech('A');
-pros::adi::DigitalOut doinker('E');
-pros::adi::DigitalOut intake_lift('H');
+pros::adi::DigitalOut mogo_mech('B');
+pros::adi::DigitalOut doinker('G');
+pros::adi::DigitalOut intake_lift('D');
 
-pros::Motor arm_motor(-7, pros::MotorGears::red);
-pros::Motor intake(-15, pros::MotorGears::blue);
+pros::Motor arm_motor(-1, pros::MotorGears::red);
+pros::Motor intake(-5, pros::MotorGears::blue);
 
 // left motor group
-pros::MotorGroup left_motor_group({-3, -4, -5}, pros::MotorGears::blue);
+pros::MotorGroup left_motor_group({-12, -14, -15}, pros::MotorGears::blue);
 // right motor group
-pros::MotorGroup right_motor_group({1, 6, 9}, pros::MotorGears::blue);
+pros::MotorGroup right_motor_group({2, 9, 10}, pros::MotorGears::blue);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&left_motor_group, // left motor group
@@ -129,10 +129,10 @@ void arm_move_load(){
     arm_moving = true;
     while(arm_moving){
         arm_motor.move(60);
-        while(arm_rot.get_position()>16000){
+        while(arm_rot.get_position()>15500){
             pros::delay(20);
         }
-        if(arm_rot.get_position()<16000){
+        if(arm_rot.get_position()<15500){
             arm_moving = false;
         }
     }
@@ -183,7 +183,8 @@ void red_qual_left(){
     chassis.moveToPoint(-24, 4, 2000);
 }
 void red_qual_right(){
-chassis.setPose(-56, 12, 0);
+    red = true;
+    chassis.setPose(-56, 12, 0);
     chassis.moveToPoint(-56, 6, 750, {.forwards = false});
     chassis.moveToPoint(-56, 1, 500);
     chassis.turnToHeading(90, 500);
@@ -226,7 +227,7 @@ chassis.setPose(-56, 12, 0);
     chassis.moveToPoint(-36, -6, 2000);
 }
 void red_elim_left(){
-    // score preload on alliance stake
+// score preload on alliance stake
     red = true;
     chassis.setPose(-56, 12, 0);
     chassis.moveToPoint(-56, -6, 750, {.forwards = false});
@@ -268,8 +269,92 @@ void red_elim_left(){
     chassis.moveToPoint(-24, 4, 2000);
 }
 void red_elim_right(){}
-void blue_qual_left(){}
-void blue_qual_right(){}
+void blue_qual_left(){
+    // score preload on alliance stake
+    red = false;
+    chassis.setPose(56, 12, 0);
+    chassis.moveToPoint(56, -6, 750, {.forwards = false});
+    chassis.moveToPoint(56, -1, 500);
+    chassis.turnToHeading(-90, 500);
+    chassis.moveToPoint(62, -1, 500, {.forwards = false});
+    chassis.turnToHeading(-92, 500);
+    chassis.waitUntilDone();
+    intake.move(127);
+    pros::delay(500);
+    intake.move(0);
+    // pick up mogo
+    chassis.swingToHeading(0, lemlib::DriveSide::LEFT, 750);
+    chassis.turnToPoint(24, 21, 750, {.forwards = false});
+    chassis.moveToPose(20, 24, -240, 1500, {.forwards = false, .minSpeed = 70});
+    chassis.waitUntilDone();
+    mogo_mech.set_value(true);
+    pros::delay(125);
+    // score ring 1
+    chassis.turnToPoint(26, 42, 500);
+    chassis.moveToPoint(26, 42, 500);
+    intake.move(127);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    // score ring 2
+    chassis.turnToPoint(10, 42, 500);
+    chassis.moveToPoint(10, 42, 1000);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    // scoring ring 3
+    chassis.moveToPoint(24, 48, 1000, {.forwards = false});
+    chassis.turnToPoint(8, 50, 500);
+    chassis.moveToPoint(8, 50, 1000);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    // touching elevation structure
+    chassis.moveToPoint(24, 48, 1000, {.forwards = false});
+    chassis.turnToHeading(180, 500);
+    chassis.moveToPoint(24, 4, 2000);
+}
+void blue_qual_right(){
+    red = false;
+    chassis.setPose(56, 12, 0);
+    chassis.moveToPoint(56, 6, 750, {.forwards = false});
+    chassis.moveToPoint(56, 1, 500);
+    chassis.turnToHeading(-90, 500);
+    chassis.moveToPoint(62, 1, 500, {.forwards = false});
+    chassis.turnToHeading(-88, 500);
+    chassis.waitUntilDone();
+    intake.move(127);
+    pros::delay(500);
+    intake.move(0);
+    // pick up mogo
+    chassis.swingToHeading(180, lemlib::DriveSide::RIGHT, 750);
+    chassis.turnToPoint(24, -24, 750, {.forwards = false});
+    chassis.moveToPoint(24, -24, 1000, {.forwards = false});
+    chassis.waitUntilDone();
+    mogo_mech.set_value(true);
+    pros::delay(250);
+    // score ring 1
+    chassis.turnToPoint(26, -40, 500);
+    chassis.moveToPoint(26, -40, 500);
+    intake.move(127);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    chassis.moveToPoint(chassis.getPose().x, -30, 500, {.forwards = false});
+    // clear corner
+    chassis.moveToPose(64, -64, -270, 2000, {.minSpeed = 90});
+    chassis.waitUntil(20);
+    doinker.set_value(true);
+    chassis.waitUntilDone();
+    chassis.turnToHeading(-315, 750);
+    chassis.waitUntilDone();
+    doinker.set_value(false);
+    pros::delay(250);
+    // score ring 2
+    chassis.moveToPoint(60, -60, 1000, {.maxSpeed = 60});
+    chassis.waitUntilDone();
+    pros::delay(500);
+    // touch elevation structure
+    chassis.moveToPoint(38, -26, 1000, {.forwards = false});
+    chassis.turnToPoint(36, -6, 750);
+    chassis.moveToPoint(36, -6, 2000);
+}
 void blue_elim_left(){}
 void blue_elim_right(){}
 void prog_skills(){}
@@ -349,17 +434,17 @@ int auton_selected = 0;
 void initialize() {
     chassis.calibrate(); // calibrate sensors
     selector.focus();
-    pros::Task sort_task([]{
-        while(true){
-            if(!red){
-                color_sort(RED);
-                pros::delay(20);
-            } else if(red){
-                color_sort(BLUE);
-                pros::delay(20);
-            }
-        }
-    });
+    // pros::Task sort_task([]{
+    //     while(true){
+    //         if(!red){
+    //             color_sort(RED);
+    //             pros::delay(20);
+    //         } else if(red){
+    //             color_sort(BLUE);
+    //             pros::delay(20);
+    //         }
+    //     }
+    // });
     pros::Task selector_task([]{
         while(!auto_started){
             while(!(selector_switch.get_value() == 1)){
@@ -428,7 +513,7 @@ void competition_initialize() {}
  */
 void autonomous() {
     auto_started = true;
-    red_qual_right();
+    red_qual_left();
     // switch(auton_selected) {
     //     case 1:
     //         red_qual_left();
@@ -481,7 +566,6 @@ void opcontrol() {
 	pros::Controller controller(pros::E_CONTROLLER_MASTER);
 	bool ring_mech_on = false;
     arm_motor.set_brake_mode(pros::MotorBrake::hold);
-    red = true;
     
 
 	while (true) {
@@ -544,13 +628,7 @@ void opcontrol() {
         
         // manual color sort override
         if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)){
-            // red = true;
-            intake.move(127);
-            pros::delay(100);
-            while(!(get_hook_position() < 5000)){
-                pros::delay(10);
-            }
-            intake.move(0);
+            red = true;
         } else if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)){
             red = false;
         }
