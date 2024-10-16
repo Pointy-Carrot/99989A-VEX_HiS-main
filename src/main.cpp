@@ -14,9 +14,10 @@ ASSET(path1_txt);
 pros::adi::AnalogIn selector_knob('B');
 pros::adi::DigitalIn selector_switch('D');
 pros::Rotation vert_tracker(11);
+pros::Rotation horiz_tracker(-20);
 pros::Rotation arm_rot(19);
 pros::Optical sorter(21);
-pros::Rotation hooks_rot(-20);
+// pros::Rotation hooks_rot(-20);
 
 pros::adi::DigitalOut mogo_mech('B');
 pros::adi::DigitalOut doinker('G');
@@ -36,7 +37,7 @@ lemlib::Drivetrain drivetrain(&left_motor_group, // left motor group
                               13, // 14.5 inch track width
                               lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
                               450, // drivetrain rpm is 450
-                              8 // horizontal drift is 2 (for now)
+                              2 // horizontal drift is 2 (for now)
 );
 
 // imu
@@ -50,11 +51,12 @@ pros::Imu imu(13);
 // lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_275, -5.75);
 // vertical tracking wheel
 lemlib::TrackingWheel vertical_tracking_wheel(&vert_tracker, lemlib::Omniwheel::NEW_2, .75);
+lemlib::TrackingWheel horizontal_tracking_wheel(&horiz_tracker, lemlib::Omniwheel::NEW_2, 2);
 
 // odometry settings
 lemlib::OdomSensors sensors(&vertical_tracking_wheel, // vertical tracking wheel 1, set to null
                             nullptr, // vertical tracking wheel 2, set to nullptr as we are using IMEs
-                            nullptr, // horizontal tracking wheel 1
+                            &horizontal_tracking_wheel, // horizontal tracking wheel 1
                             nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
                             &imu // inertial sensor
 );
@@ -101,10 +103,12 @@ lemlib::Chassis chassis(drivetrain, // drivetrain settings
 bool ejecting = false;
 bool red = true;
 bool arm_moving = false;
+double current_position;
 
 void eject_ring(){
+    pros::delay(40);
     intake.move(-127);
-    pros::delay(100);
+    pros::delay(150);
     intake.move(127);
 }
 
@@ -113,9 +117,9 @@ enum Color {
     BLUE
 };
 
-double get_hook_position(){
-    return (hooks_rot.get_position() % 54000);
-}
+// double get_hook_position(){
+//     return (hooks_rot.get_position() % 54000);
+// }
 
 
 
@@ -129,10 +133,10 @@ void arm_move_load(){
     arm_moving = true;
     while(arm_moving){
         arm_motor.move(60);
-        while(arm_rot.get_position()>15500){
+        while(arm_rot.get_position()>12000){
             pros::delay(20);
         }
-        if(arm_rot.get_position()<15500){
+        if(arm_rot.get_position()<12000){
             arm_moving = false;
         }
     }
@@ -389,9 +393,9 @@ void sort_red(){
             ejecting = true;
             intake.set_brake_mode(pros::MotorBrake::hold);
             pros::delay(100);
-            while(!(get_hook_position() > 9000)){
-                pros::delay(10);
-            }
+            // while(!(get_hook_position() > 9000)){
+            //     pros::delay(10);
+            // }
             eject_ring();
             intake.set_brake_mode(pros::MotorBrake::coast);
             ejecting = false;
@@ -406,10 +410,9 @@ void sort_blue(){
         if((sorter.get_hue() > 180 && sorter.get_hue() < 300) && !ejecting){
             ejecting = true;
             intake.set_brake_mode(pros::MotorBrake::hold);
-            pros::delay(100);
-            while(!(get_hook_position() > 9000)){
-                pros::delay(10);
-            }
+            // while(!(get_hook_position() > 9000)){
+            //     pros::delay(10);
+            // }
             eject_ring();
             intake.set_brake_mode(pros::MotorBrake::coast);
             ejecting = false;
