@@ -14,7 +14,7 @@ ASSET(path1_txt);
 pros::adi::AnalogIn selector_knob('B');
 pros::adi::DigitalIn selector_switch('D');
 pros::Rotation vert_tracker(11);
-pros::Rotation horiz_tracker(-20);
+pros::Rotation horiz_tracker(20);
 pros::Rotation arm_rot(19);
 pros::Optical sorter(21);
 // pros::Rotation hooks_rot(-20);
@@ -37,7 +37,7 @@ lemlib::Drivetrain drivetrain(&left_motor_group, // left motor group
                               13, // 14.5 inch track width
                               lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
                               450, // drivetrain rpm is 450
-                              2 // horizontal drift is 2 (for now)
+                              8 // horizontal drift is 2 (for now)
 );
 
 // imu
@@ -76,7 +76,7 @@ lemlib::ControllerSettings lateral_controller(4, // proportional gain (kP)
 // angular PID controller
 lemlib::ControllerSettings angular_controller(4, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              28, // derivative gain (kD)
+                                              32, // derivative gain (kD)
                                               3, // anti windup
                                               1, // small error range, in degrees
                                               100, // small error range timeout, in milliseconds
@@ -133,10 +133,10 @@ void arm_move_load(){
     arm_moving = true;
     while(arm_moving){
         arm_motor.move(60);
-        while(arm_rot.get_position()>12000){
+        while(arm_rot.get_position()>11000){
             pros::delay(20);
         }
-        if(arm_rot.get_position()<12000){
+        if(arm_rot.get_position()<11000){
             arm_moving = false;
         }
     }
@@ -144,47 +144,50 @@ void arm_move_load(){
     arm_motor.move(0);
 }
 
+
 void red_qual_left(){
-    // score preload on alliance stake
     red = true;
-    chassis.setPose(-56, 12, 0);
-    chassis.moveToPoint(-56, -6, 750, {.forwards = false});
-    chassis.moveToPoint(-56, -1, 500);
-    chassis.turnToHeading(90, 500);
-    chassis.moveToPoint(-62, -1, 500, {.forwards = false});
-    chassis.turnToHeading(92, 500);
-    chassis.waitUntilDone();
+    chassis.setPose(-55, 32, 0);
+    // pickup alliance partner matchload
+    chassis.moveToPoint(-55, 40, 500, {.minSpeed = 100});
+    chassis.swingToHeading(30, lemlib::DriveSide::RIGHT, 500);
     intake.move(127);
     pros::delay(500);
     intake.move(0);
-    // pick up mogo
-    chassis.swingToHeading(0, lemlib::DriveSide::LEFT, 750);
-    chassis.turnToPoint(-24, 21, 750, {.forwards = false});
-    chassis.moveToPose(-20, 24, 240, 1500, {.forwards = false, .minSpeed = 70});
+    // pick up first mogo
+    chassis.turnToPoint(-18, 22, 500, {.forwards = false});
+    chassis.moveToPoint(-16, 21, 1500, {.forwards = false, .maxSpeed = 70});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
-    pros::delay(125);
-    // score ring 1
-    chassis.turnToPoint(-26, 42, 500);
-    chassis.moveToPoint(-26, 42, 500);
+    pros::delay(250);
+    // intake rings
     intake.move(127);
+    pros::delay(500);
+    chassis.turnToPoint(-24, 48, 500);
+    chassis.moveToPoint(-24, 48, 1000);
     chassis.waitUntilDone();
-    pros::delay(250);
-    // score ring 2
-    chassis.turnToPoint(-10, 42, 500);
-    chassis.moveToPoint(-10, 42, 1000);
+    pros::delay(500);
+    chassis.turnToPoint(-40, 0, 750);
+    chassis.moveToPoint(-40, 0, 1000);
+    chassis.waitUntil(30);
+    // drop first mogo
+    mogo_mech.set_value(false);
+    intake.move(0);
     chassis.waitUntilDone();
-    pros::delay(250);
-    // scoring ring 3
-    chassis.moveToPoint(-24, 48, 1000, {.forwards = false});
-    chassis.turnToPoint(-8, 50, 500);
-    chassis.moveToPoint(-8, 50, 1000);
+    // pick up second mogo
+    chassis.turnToHeading(0, 750);
+    chassis.moveToPoint(-18, -23, 2000, {.forwards = false, .maxSpeed = 65});
     chassis.waitUntilDone();
+    mogo_mech.set_value(true);
     pros::delay(250);
+    // picking up rings
+    chassis.turnToPoint(-16, -46, 750);
+    chassis.moveToPoint(-16, -46, 1000);
+    intake.move(127);
     // touching elevation structure
-    chassis.moveToPoint(-24, 48, 1000, {.forwards = false});
-    chassis.turnToHeading(180, 500);
-    chassis.moveToPoint(-24, 4, 2000);
+    chassis.turnToPoint(-20, 0, 1000);
+    chassis.moveToPoint(-20, 0, 1500);
+
 }
 void red_qual_right(){
     red = true;
@@ -361,7 +364,59 @@ void blue_qual_right(){
 }
 void blue_elim_left(){}
 void blue_elim_right(){}
-void prog_skills(){}
+void prog_skills(){
+    chassis.setPose(-58, 0, 90);
+
+    intake.move(127);
+    pros::delay(500);
+    intake.move(0);
+    chassis.moveToPoint(-49, 0, 1000);
+    chassis.turnToHeading(0, 500);
+    chassis.moveToPoint(-49, -24, 1000, {.forwards = false});
+    chassis.waitUntilDone();
+    mogo_mech.set_value(true);
+    pros::delay(250);
+    chassis.turnToHeading(90, 500);
+    chassis.moveToPoint(-20, -24, 1000, {.minSpeed = 90});
+    intake.move(127);
+    chassis.swingToPoint(0, -40, lemlib::DriveSide::RIGHT, 500);
+    chassis.moveToPoint(0, -40, 1000);
+    chassis.moveToPoint(11, -48, 1000);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    chassis.turnToHeading(270, 750, {.direction = lemlib::AngularDirection::CW_CLOCKWISE});
+    chassis.moveToPoint(0, -40, 1000);
+    chassis.turnToHeading(180, 500);
+    pros::Task arm_up_task1([]{
+        arm_move_load();
+    });
+    chassis.moveToPoint(0, -58, 500);
+    chassis.waitUntilDone();
+    pros::delay(750);
+    arm_motor.move(127);
+    pros::delay(500);
+    arm_motor.move(0);
+    chassis.moveToPoint(0, -48, 500, {.forwards = false});
+    pros::Task arm_down_task1([]{
+        arm_motor.move(-127);
+        while(arm_rot.get_position() < 16000){
+            pros::delay(20);
+        }
+        arm_motor.move(0);
+    });
+    chassis.turnToPoint(-48, -24, 500);
+    chassis.moveToPoint(-48, -24, 1000, {.minSpeed = 80});
+    chassis.moveToPoint(-56, -24, 750);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    chassis.moveToPoint(-48, -24, 1000, {.forwards = false});
+    chassis.turnToHeading(180, 500);
+    chassis.moveToPoint(-48, -58, 1000);
+    chassis.swingToPoint(-64, -64, lemlib::DriveSide::RIGHT, 500, {.forwards = false});
+    chassis.moveToPoint(-64, -64, 1000, {.forwards = false});
+    chassis.waitUntilDone();
+    mogo_mech.set_value(false);
+}
 
 
 
@@ -575,6 +630,8 @@ void opcontrol() {
 		// get left y and right x positions
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        console.println(std::to_string(chassis.getPose().x));
+        console.println(std::to_string(chassis.getPose().y));
         // move the robot
         chassis.arcade(leftY, rightX);
         
@@ -603,7 +660,7 @@ void opcontrol() {
             }
 		}
 
-        // arm controls
+        // doinker controls
         if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)){
             if(b_pressed){
                 doinker.set_value(false);
@@ -625,6 +682,7 @@ void opcontrol() {
             arm_motor.move(arm_velocity);
         } else if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
             arm_motor.move(-arm_velocity);
+            
         } else if(!arm_moving){
             arm_motor.move(0);
         }
@@ -638,5 +696,6 @@ void opcontrol() {
 
         // delay to save resources
         pros::delay(25);
+        console.clear();
 	}
 }
