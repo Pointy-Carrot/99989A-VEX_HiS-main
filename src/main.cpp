@@ -4,6 +4,7 @@
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "pros/adi.h"
 #include "pros/adi.hpp"
+#include "pros/misc.h"
 #include "robodash/api.h"
 #include <cstdio>
 #include <string>
@@ -11,8 +12,8 @@
 ASSET(path1_txt);
 
 // config
-pros::adi::AnalogIn selector_knob('B');
-pros::adi::DigitalIn selector_switch('D');
+pros::adi::AnalogIn selector_knob('A');
+pros::adi::DigitalIn selector_switch('H');
 pros::Rotation vert_tracker(11);
 pros::Rotation horiz_tracker(20);
 pros::Rotation arm_rot(19);
@@ -133,10 +134,10 @@ void arm_move_load(){
     arm_moving = true;
     while(arm_moving){
         arm_motor.move(60);
-        while(arm_rot.get_position()>11000){
+        while(arm_rot.get_position()>11500){
             pros::delay(20);
         }
-        if(arm_rot.get_position()<11000){
+        if(arm_rot.get_position()<11500){
             arm_moving = false;
         }
     }
@@ -277,46 +278,48 @@ void red_elim_left(){
 }
 void red_elim_right(){}
 void blue_qual_left(){
-    // score preload on alliance stake
-    red = false;
-    chassis.setPose(56, 12, 0);
-    chassis.moveToPoint(56, -6, 750, {.forwards = false});
-    chassis.moveToPoint(56, -1, 500);
-    chassis.turnToHeading(-90, 500);
-    chassis.moveToPoint(62, -1, 500, {.forwards = false});
-    chassis.turnToHeading(-92, 500);
-    chassis.waitUntilDone();
+    red = true;
+    chassis.setPose(55, 32, 0);
+    // pickup alliance partner matchload
+    chassis.moveToPoint(55, 40, 500, {.minSpeed = 100});
+    chassis.swingToHeading(-30, lemlib::DriveSide::LEFT, 500);
     intake.move(127);
     pros::delay(500);
     intake.move(0);
-    // pick up mogo
-    chassis.swingToHeading(0, lemlib::DriveSide::LEFT, 750);
-    chassis.turnToPoint(24, 21, 750, {.forwards = false});
-    chassis.moveToPose(20, 24, -240, 1500, {.forwards = false, .minSpeed = 70});
+    // pick up first mogo
+    chassis.turnToPoint(18, 22, 500, {.forwards = false});
+    chassis.moveToPoint(16, 21, 1500, {.forwards = false, .maxSpeed = 70});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
-    pros::delay(125);
-    // score ring 1
-    chassis.turnToPoint(26, 42, 500);
-    chassis.moveToPoint(26, 42, 500);
+    pros::delay(250);
+    // intake rings
     intake.move(127);
+    pros::delay(500);
+    chassis.turnToPoint(24, 48, 500);
+    chassis.moveToPoint(24, 48, 1000);
     chassis.waitUntilDone();
-    pros::delay(250);
-    // score ring 2
-    chassis.turnToPoint(10, 42, 500);
-    chassis.moveToPoint(10, 42, 1000);
+    pros::delay(500);
+    chassis.turnToPoint(40, 0, 750);
+    chassis.moveToPoint(40, 0, 1000);
+    chassis.waitUntil(30);
+    // drop first mogo
+    mogo_mech.set_value(false);
+    intake.move(0);
     chassis.waitUntilDone();
-    pros::delay(250);
-    // scoring ring 3
-    chassis.moveToPoint(24, 48, 1000, {.forwards = false});
-    chassis.turnToPoint(8, 50, 500);
-    chassis.moveToPoint(8, 50, 1000);
+    // pick up second mogo
+    chassis.turnToHeading(0, 750);
+    chassis.moveToPoint(18, -23, 2000, {.forwards = false, .maxSpeed = 65});
     chassis.waitUntilDone();
+    mogo_mech.set_value(true);
     pros::delay(250);
+    // picking up rings
+    chassis.turnToPoint(16, -46, 750);
+    chassis.moveToPoint(16, -46, 1000);
+    intake.move(127);
     // touching elevation structure
-    chassis.moveToPoint(24, 48, 1000, {.forwards = false});
-    chassis.turnToHeading(180, 500);
-    chassis.moveToPoint(24, 4, 2000);
+    chassis.turnToPoint(20, 0, 1000);
+    chassis.moveToPoint(20, 0, 1500);
+
 }
 void blue_qual_right(){
     red = false;
@@ -491,7 +494,8 @@ int auton_selected = 0;
 // initialize function. Runs on program startup
 void initialize() {
     chassis.calibrate(); // calibrate sensors
-    selector.focus();
+    console.focus();
+    pros::Controller controller(CONTROLLER_MASTER);
     // pros::Task sort_task([]{
     //     while(true){
     //         if(!red){
@@ -571,33 +575,32 @@ void competition_initialize() {}
  */
 void autonomous() {
     auto_started = true;
-    red_qual_left();
-    // switch(auton_selected) {
-    //     case 1:
-    //         red_qual_left();
-    //         break;
-    //     case 2:
-    //         red_qual_right();
-    //         break;
-    //     case 3:
-    //         red_elim_left();
-    //         break;
-    //     case 4:
-    //         red_elim_right();
-    //         break;
-    //     case 5:
-    //         blue_qual_left();
-    //         break;
-    //     case 6:
-    //         blue_qual_right();
-    //         break;
-    //     case 7:
-    //         blue_elim_left();
-    //         break;
-    //     case 8:
-    //         blue_elim_right();
-    //         break;
-    // }
+    switch(auton_selected) {
+        case 1:
+            red_qual_left();
+            break;
+        case 2:
+            red_qual_right();
+            break;
+        case 3:
+            red_elim_left();
+            break;
+        case 4:
+            red_elim_right();
+            break;
+        case 5:
+            blue_qual_left();
+            break;
+        case 6:
+            blue_qual_right();
+            break;
+        case 7:
+            blue_elim_left();
+            break;
+        case 8:
+            blue_elim_right();
+            break;
+    }
     
 }
 
@@ -621,7 +624,7 @@ int arm_velocity = 127;
  */
 void opcontrol() {
 	console.focus();
-	pros::Controller controller(pros::E_CONTROLLER_MASTER);
+    pros::Controller controller(CONTROLLER_MASTER);
 	bool ring_mech_on = false;
     arm_motor.set_brake_mode(pros::MotorBrake::hold);
     
@@ -632,6 +635,7 @@ void opcontrol() {
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         console.println(std::to_string(chassis.getPose().x));
         console.println(std::to_string(chassis.getPose().y));
+        
         // move the robot
         chassis.arcade(leftY, rightX);
         
