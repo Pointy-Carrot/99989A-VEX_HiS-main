@@ -160,7 +160,7 @@ void red_qual_left(){
     chassis.moveToPoint(-16, 21, 1500, {.forwards = false, .maxSpeed = 70});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
-    pros::delay(250);
+    pros::delay(350);
     // intake rings
     intake.move(127);
     pros::delay(500);
@@ -186,96 +186,64 @@ void red_qual_left(){
     chassis.moveToPoint(-16, -46, 1000);
     intake.move(127);
     // touching elevation structure
-    chassis.turnToPoint(-20, 0, 1000);
-    chassis.moveToPoint(-20, 0, 1500);
+    chassis.turnToPoint(-24, 0, 1000);
+    chassis.moveToPoint(-24, 0, 1500);
 
 }
 void red_qual_right(){
     red = true;
-    chassis.setPose(-56, 12, 0);
-    chassis.moveToPoint(-56, 6, 750, {.forwards = false});
-    chassis.moveToPoint(-56, 1, 500);
-    chassis.turnToHeading(90, 500);
-    chassis.moveToPoint(-62, 1, 500, {.forwards = false});
-    chassis.turnToHeading(88, 500);
+    chassis.setPose(-55, -16, 0);
+    // scoring preload on alliance stake
+    chassis.swingToPoint(-62.75, -2, lemlib::DriveSide::LEFT, 500, {.minSpeed = 80});
+    chassis.moveToPoint(-62.75, -2, 500);
+    pros::Task alliance_stake_task([]{
+        arm_motor.move(127);
+        while(arm_rot.get_position() > -8000){
+            pros::delay(20);
+        }
+        arm_motor.move(-127);
+        while(arm_rot.get_position() < 13000){
+            pros::delay(20);
+        }
+        arm_motor.move(0);
+    });
     chassis.waitUntilDone();
-    intake.move(127);
+    pros::delay(250);
+    chassis.turnToHeading(310, 500);
+    chassis.waitUntilDone();
     pros::delay(500);
-    intake.move(0);
-    // pick up mogo
-    chassis.swingToHeading(180, lemlib::DriveSide::RIGHT, 750);
-    chassis.turnToPoint(-24, -24, 750, {.forwards = false});
-    chassis.moveToPoint(-24, -24, 1000, {.forwards = false});
+    // grabbing ring with doinker
+    chassis.turnToHeading(0, 500);
+    chassis.moveToPoint(-60, -16, 500, {.forwards = false});
+    chassis.turnToPoint(-48, -4, 500);
+    chassis.waitUntilDone();
+    doinker.set_value(true);
+    pros::delay(250);
+    // picking up mogo
+    chassis.turnToHeading(0, 500, {.maxSpeed = 60});
+    chassis.swingToPoint(-48, -38, lemlib::DriveSide::RIGHT, 500, {.forwards = false});
+    chassis.moveToPoint(-48, -38, 1000, {.forwards = false});
+    chassis.turnToPoint(-22, -24, 500, {.forwards = false});
+    chassis.moveToPoint(-22, -24, 1000, {.forwards = false});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
-    pros::delay(250);
-    // score ring 1
-    chassis.turnToPoint(-26, -40, 500);
-    chassis.moveToPoint(-26, -40, 500);
-    intake.move(127);
-    chassis.waitUntilDone();
-    pros::delay(250);
-    chassis.moveToPoint(chassis.getPose().x, -30, 500, {.forwards = false});
-    // clear corner
-    chassis.moveToPose(-64, -64, 270, 2000, {.minSpeed = 90});
-    chassis.waitUntil(20);
-    doinker.set_value(true);
-    chassis.waitUntilDone();
-    chassis.turnToHeading(315, 750);
-    chassis.waitUntilDone();
     doinker.set_value(false);
     pros::delay(250);
-    // score ring 2
-    chassis.moveToPoint(-60, -60, 1000, {.maxSpeed = 60});
-    chassis.waitUntilDone();
-    pros::delay(500);
-    // touch elevation structure
-    chassis.moveToPoint(-38, -26, 1000, {.forwards = false});
-    chassis.turnToPoint(-36, -6, 750);
-    chassis.moveToPoint(-36, -6, 2000);
-}
-void red_elim_left(){
-// score preload on alliance stake
-    red = true;
-    chassis.setPose(-56, 12, 0);
-    chassis.moveToPoint(-56, -6, 750, {.forwards = false});
-    chassis.moveToPoint(-56, -1, 500);
-    chassis.turnToHeading(90, 500);
-    chassis.moveToPoint(-62, -1, 500, {.forwards = false});
-    chassis.turnToHeading(92, 500);
-    chassis.waitUntilDone();
-    intake.move(127);
-    pros::delay(500);
-    intake.move(0);
-    // pick up mogo
-    chassis.swingToHeading(0, lemlib::DriveSide::LEFT, 750);
-    chassis.turnToPoint(-24, 21, 750, {.forwards = false});
-    chassis.moveToPose(-20, 24, 240, 1500, {.forwards = false, .minSpeed = 70});
-    chassis.waitUntilDone();
-    mogo_mech.set_value(true);
-    pros::delay(125);
-    // score ring 1
-    chassis.turnToPoint(-26, 42, 500);
-    chassis.moveToPoint(-26, 42, 500);
+    //scoring doinker ring
+    chassis.moveToPoint(-42, -38, 1000);
     intake.move(127);
     chassis.waitUntilDone();
-    pros::delay(250);
-    // score ring 2
-    chassis.turnToPoint(-10, 42, 500);
-    chassis.moveToPoint(-10, 42, 1000);
+    pros::delay(750);
+    // picking up ring
+    chassis.turnToPoint(-24, -40, 750);
+    chassis.moveToPoint(-24, -40, 1000);
     chassis.waitUntilDone();
-    pros::delay(250);
-    // scoring ring 3
-    chassis.moveToPoint(-24, 48, 1000, {.forwards = false});
-    chassis.turnToPoint(-8, 50, 500);
-    chassis.moveToPoint(-8, 50, 1000);
-    chassis.waitUntilDone();
-    pros::delay(250);
+    pros::delay(1000);
     // touching elevation structure
-    chassis.moveToPoint(-24, 48, 1000, {.forwards = false});
-    chassis.turnToHeading(180, 500);
-    chassis.moveToPoint(-24, 4, 2000);
+    chassis.turnToPoint(-24, 2, 750);
+    chassis.moveToPoint(-24, 2, 1000);
 }
+void red_elim_left(){}
 void red_elim_right(){}
 void blue_qual_left(){
     red = true;
@@ -284,87 +252,44 @@ void blue_qual_left(){
     chassis.moveToPoint(55, 40, 500, {.minSpeed = 100});
     chassis.swingToHeading(-30, lemlib::DriveSide::LEFT, 500);
     intake.move(127);
-    pros::delay(500);
+    pros::delay(300);
     intake.move(0);
     // pick up first mogo
-    chassis.turnToPoint(18, 22, 500, {.forwards = false});
-    chassis.moveToPoint(16, 21, 1500, {.forwards = false, .maxSpeed = 70});
+    chassis.turnToPoint(24, 26, 500, {.forwards = false});
+    chassis.moveToPoint(24, 26, 1500, {.forwards = false, .maxSpeed = 70});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
     pros::delay(250);
     // intake rings
     intake.move(127);
     pros::delay(500);
-    chassis.turnToPoint(24, 48, 500);
-    chassis.moveToPoint(24, 48, 1000);
+    chassis.turnToPoint(24, 44, 500);
+    chassis.moveToPoint(24, 44, 1000);
     chassis.waitUntilDone();
     pros::delay(500);
     chassis.turnToPoint(40, 0, 750);
-    chassis.moveToPoint(40, 0, 1000);
-    chassis.waitUntil(30);
+    chassis.moveToPoint(46, 0, 1250);
+    chassis.waitUntil(25);
     // drop first mogo
     mogo_mech.set_value(false);
     intake.move(0);
     chassis.waitUntilDone();
     // pick up second mogo
     chassis.turnToHeading(0, 750);
-    chassis.moveToPoint(18, -23, 2000, {.forwards = false, .maxSpeed = 65});
+    chassis.moveToPoint(18, -26, 2000, {.forwards = false, .maxSpeed = 65});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
     pros::delay(250);
     // picking up rings
-    chassis.turnToPoint(16, -46, 750);
-    chassis.moveToPoint(16, -46, 1000);
+    chassis.turnToPoint(30, -46, 750);
+    chassis.moveToPoint(30, -46, 1000);
     intake.move(127);
     // touching elevation structure
     chassis.turnToPoint(20, 0, 1000);
     chassis.moveToPoint(20, 0, 1500);
 
 }
-void blue_qual_right(){
-    red = false;
-    chassis.setPose(56, 12, 0);
-    chassis.moveToPoint(56, 6, 750, {.forwards = false});
-    chassis.moveToPoint(56, 1, 500);
-    chassis.turnToHeading(-90, 500);
-    chassis.moveToPoint(62, 1, 500, {.forwards = false});
-    chassis.turnToHeading(-88, 500);
-    chassis.waitUntilDone();
-    intake.move(127);
-    pros::delay(500);
-    intake.move(0);
-    // pick up mogo
-    chassis.swingToHeading(180, lemlib::DriveSide::RIGHT, 750);
-    chassis.turnToPoint(24, -24, 750, {.forwards = false});
-    chassis.moveToPoint(24, -24, 1000, {.forwards = false});
-    chassis.waitUntilDone();
-    mogo_mech.set_value(true);
-    pros::delay(250);
-    // score ring 1
-    chassis.turnToPoint(26, -40, 500);
-    chassis.moveToPoint(26, -40, 500);
-    intake.move(127);
-    chassis.waitUntilDone();
-    pros::delay(250);
-    chassis.moveToPoint(chassis.getPose().x, -30, 500, {.forwards = false});
-    // clear corner
-    chassis.moveToPose(64, -64, -270, 2000, {.minSpeed = 90});
-    chassis.waitUntil(20);
-    doinker.set_value(true);
-    chassis.waitUntilDone();
-    chassis.turnToHeading(-315, 750);
-    chassis.waitUntilDone();
-    doinker.set_value(false);
-    pros::delay(250);
-    // score ring 2
-    chassis.moveToPoint(60, -60, 1000, {.maxSpeed = 60});
-    chassis.waitUntilDone();
-    pros::delay(500);
-    // touch elevation structure
-    chassis.moveToPoint(38, -26, 1000, {.forwards = false});
-    chassis.turnToPoint(36, -6, 750);
-    chassis.moveToPoint(36, -6, 2000);
-}
+void blue_qual_right(){}
 void blue_elim_left(){}
 void blue_elim_right(){}
 void prog_skills(){
@@ -575,32 +500,33 @@ void competition_initialize() {}
  */
 void autonomous() {
     auto_started = true;
-    switch(auton_selected) {
-        case 1:
-            red_qual_left();
-            break;
-        case 2:
-            red_qual_right();
-            break;
-        case 3:
-            red_elim_left();
-            break;
-        case 4:
-            red_elim_right();
-            break;
-        case 5:
-            blue_qual_left();
-            break;
-        case 6:
-            blue_qual_right();
-            break;
-        case 7:
-            blue_elim_left();
-            break;
-        case 8:
-            blue_elim_right();
-            break;
-    }
+    red_qual_right();
+    // switch(auton_selected) {
+    //     case 1:
+    //         red_qual_left();
+    //         break;
+    //     case 2:
+    //         red_qual_right();
+    //         break;
+    //     case 3:
+    //         red_elim_left();
+    //         break;
+    //     case 4:
+    //         red_elim_right();
+    //         break;
+    //     case 5:
+    //         blue_qual_left();
+    //         break;
+    //     case 6:
+    //         blue_qual_right();
+    //         break;
+    //     case 7:
+    //         blue_elim_left();
+    //         break;
+    //     case 8:
+    //         blue_elim_right();
+    //         break;
+    // }
     
 }
 
