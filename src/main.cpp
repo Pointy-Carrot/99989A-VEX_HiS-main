@@ -5,6 +5,8 @@
 #include "pros/adi.h"
 #include "pros/adi.hpp"
 #include "pros/misc.h"
+#include "pros/motor_group.hpp"
+#include "pros/optical.h"
 #include "robodash/api.h"
 #include <cstdio>
 #include <string>
@@ -12,7 +14,6 @@
 ASSET(path1_txt);
 
 // config
-pros::adi::AnalogIn selector_knob('A');
 pros::adi::DigitalIn selector_switch('H');
 pros::Rotation vert_tracker(11);
 pros::Rotation horiz_tracker(20);
@@ -20,12 +21,13 @@ pros::Rotation arm_rot(19);
 pros::Optical sorter(21);
 // pros::Rotation hooks_rot(-20);
 
+pros::adi::DigitalOut hang('A');
 pros::adi::DigitalOut mogo_mech('B');
 pros::adi::DigitalOut doinker('G');
 pros::adi::DigitalOut intake_lift('D');
 
-pros::Motor arm_motor(-1, pros::MotorGears::red);
-pros::Motor intake(-5, pros::MotorGears::blue);
+pros::Motor arm_motor(1, pros::MotorGears::red);
+pros::MotorGroup intake({-5, -6}, pros::MotorGears::blue);
 
 // left motor group
 pros::MotorGroup left_motor_group({-12, -14, -15}, pros::MotorGears::blue);
@@ -134,10 +136,10 @@ void arm_move_load(){
     arm_moving = true;
     while(arm_moving){
         arm_motor.move(60);
-        while(arm_rot.get_position()>11500){
+        while(arm_rot.get_position()> 12250){
             pros::delay(20);
         }
-        if(arm_rot.get_position()<11500){
+        if(arm_rot.get_position()<12250){
             arm_moving = false;
         }
     }
@@ -146,7 +148,7 @@ void arm_move_load(){
 }
 
 
-void red_solo_awp(){
+void red_left_sawp(){
     red = true;
     chassis.setPose(-55, 32, 0);
     // pickup alliance partner matchload
@@ -157,7 +159,7 @@ void red_solo_awp(){
     intake.move(0);
     // pick up first mogo
     chassis.turnToPoint(-18, 22, 500, {.forwards = false});
-    chassis.moveToPoint(-16, 21, 1500, {.forwards = false, .maxSpeed = 70});
+    chassis.moveToPoint(-16, 21, 1500, {.forwards = false, .maxSpeed = 60});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
     pros::delay(350);
@@ -177,20 +179,20 @@ void red_solo_awp(){
     chassis.waitUntilDone();
     // pick up second mogo
     chassis.turnToHeading(0, 750);
-    chassis.moveToPoint(-18, -23, 2000, {.forwards = false, .maxSpeed = 65});
+    chassis.moveToPoint(-18, -26, 2000, {.forwards = false, .maxSpeed = 60});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
-    pros::delay(250);
+    pros::delay(400);
     // picking up rings
     chassis.turnToPoint(-16, -46, 750);
-    chassis.moveToPoint(-16, -46, 1000);
+    chassis.moveToPoint(-16, -46, 750);
     intake.move(127);
     // touching elevation structure
     chassis.turnToPoint(-24, 0, 1000);
-    chassis.moveToPoint(-24, 0, 1500);
+    chassis.moveToPoint(-24, 0, 1500, {.minSpeed = 110});
 
 }
-void red_left_6ring_nobar(){
+void red_left_5ring_cornerclear(){
     chassis.setPose(-55, 16, 180);
     // grabbing doinker ring
     chassis.moveToPoint(-55, 8, 500);
@@ -208,15 +210,15 @@ void red_left_6ring_nobar(){
     chassis.moveToPoint(-40, 10, 1000);
     intake.move(127);
     chassis.waitUntilDone();
-    pros::delay(500);
+    pros::delay(250);
     // picking up ground ring 1
-    chassis.turnToPoint(-28, 42, 750);
-    chassis.moveToPoint(-28, 42, 1000);
+    chassis.turnToPoint(-28, 44, 750);
+    chassis.moveToPoint(-28, 44, 1000);
     chassis.waitUntilDone();
-    pros::delay(500);
+    pros::delay(250);
     // picking up ground ring 2
-    chassis.turnToPoint(-6, 44, 750);
-    chassis.moveToPoint(-6, 44, 1000);
+    chassis.turnToPoint(-10, 44, 750);
+    chassis.moveToPoint(-10, 44, 1000);
     chassis.waitUntilDone();
     pros::delay(250);
     // returning
@@ -231,12 +233,12 @@ void red_left_6ring_nobar(){
     chassis.turnToPoint(-64, 74, 500);
     chassis.waitUntilDone();
     doinker.set_value(true);
-    chassis.moveToPoint(-64, 74, 1000);
-    chassis.turnToHeading(90, 500);
+    chassis.moveToPoint(-68, 64, 1000);
+    chassis.turnToHeading(90, 1000, {.minSpeed = 120});
     chassis.waitUntilDone();
     doinker.set_value(false);
 }
-void red_qual_right(){
+void red_right_aStake_bar(){
     red = true;
     chassis.setPose(-55, -16, 0);
     // scoring preload on alliance stake
@@ -289,9 +291,49 @@ void red_qual_right(){
     chassis.turnToPoint(-24, 2, 750);
     chassis.moveToPoint(-24, 2, 1000);
 }
-void red_elim_left(){}
-void red_elim_right(){}
-void blue_solo_awp(){
+void red_right_rush(){}
+void red_left_5ring_bar(){
+    chassis.setPose(-55, 16, 180);
+    // grabbing doinker ring
+    chassis.moveToPoint(-55, 8, 500);
+    chassis.waitUntilDone();
+    doinker.set_value(true);
+    pros::delay(250);
+    // picking up mogo
+    chassis.turnToPoint(-24, 20, 750, {.forwards = false, .maxSpeed = 45});
+    chassis.moveToPoint(-24, 20, 1000, {.forwards = false, .maxSpeed = 70});
+    chassis.waitUntilDone();
+    doinker.set_value(false);
+    mogo_mech.set_value(true);
+    pros::delay(400);
+    // picking up doinker ring
+    chassis.moveToPoint(-40, 10, 1000);
+    intake.move(127);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    // picking up ground ring 1
+    chassis.turnToPoint(-28, 44, 750);
+    chassis.moveToPoint(-28, 44, 1000);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    // picking up ground ring 2
+    chassis.turnToPoint(-12, 44, 750);
+    chassis.moveToPoint(-12, 44, 1000);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    // returning
+    chassis.moveToPoint(-24, 48, 1000, {.forwards = false});
+    // picking up ground ring 3
+    chassis.turnToPoint(-12, 54, 500);
+    chassis.moveToPoint(-12, 54, 1000);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    // touching elevation bar
+    chassis.moveToPoint(-24, 12, 1000, {.forwards = false});
+    chassis.turnToPoint(-24, 0, 500);
+    chassis.moveToPoint(-24, -2, 1000);
+}
+void blue_right_sawp(){
     red = true;
     chassis.setPose(55, 32, 0);
     // pickup alliance partner matchload
@@ -302,7 +344,7 @@ void blue_solo_awp(){
     intake.move(0);
     // pick up first mogo
     chassis.turnToPoint(24, 26, 500, {.forwards = false});
-    chassis.moveToPoint(24, 26, 1500, {.forwards = false, .maxSpeed = 70});
+    chassis.moveToPoint(24, 26, 1500, {.forwards = false, .maxSpeed = 60});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
     pros::delay(250);
@@ -313,6 +355,9 @@ void blue_solo_awp(){
     chassis.moveToPoint(24, 44, 1000);
     chassis.waitUntilDone();
     pros::delay(500);
+    // chassis.turnToPoint(24, 0, 750);
+    // chassis.moveToPoint(24, 0, 1000);
+
     chassis.turnToPoint(40, 0, 750);
     chassis.moveToPoint(46, 0, 1250);
     chassis.waitUntil(25);
@@ -322,48 +367,22 @@ void blue_solo_awp(){
     chassis.waitUntilDone();
     // pick up second mogo
     chassis.turnToHeading(0, 750);
-    chassis.moveToPoint(18, -26, 2000, {.forwards = false, .maxSpeed = 65});
+    chassis.moveToPoint(18, -26, 2000, {.forwards = false, .maxSpeed = 60});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
-    pros::delay(250);
+    pros::delay(400);
     // picking up rings
     chassis.turnToPoint(30, -46, 750);
-    chassis.moveToPoint(30, -46, 1000);
+    chassis.moveToPoint(30, -46, 750);
     intake.move(127);
     // touching elevation structure
     chassis.turnToPoint(20, 0, 1000);
-    chassis.moveToPoint(20, 0, 1500);
+    chassis.moveToPoint(20, 0, 1500, {.minSpeed = 110});
 }
-void blue_qual_left(){
-    red = true;
-    chassis.setPose(-55, 16, 180);
-    // scoring preload on alliance stake
-    chassis.swingToPoint(-61.5, -.5, lemlib::DriveSide::RIGHT, 500, {.minSpeed = 80});
-    chassis.moveToPoint(-61.5, -.5, 500);
-    pros::Task alliance_stake_task([]{
-        arm_motor.move(127);
-        while(arm_rot.get_position() > -8000){
-            pros::delay(20);
-        }
-        arm_motor.move(-127);
-        while(arm_rot.get_position() < 13000){
-            pros::delay(20);
-        }
-        arm_motor.move(0);
-    });
-    chassis.waitUntilDone();
-    pros::delay(250);
-    chassis.turnToHeading(230, 500);
-    chassis.waitUntilDone();
-    pros::delay(500);
-    // grabbing ring with doinker
-    chassis.moveToPoint(-55, 15, 1000, {.forwards = false});
-    chassis.turnToHeading(165, 500);
-    chassis.waitUntilDone();
-    doinker.set_value(true);
-    pros::delay(250);
-}
-void blue_qual_right(){
+void blue_right_5ring_bar(){}
+void blue_left_rush(){}
+void blue_right_6ring_nobar(){}
+void blue_right_aStake_bar(){
     red = true;
     chassis.setPose(-55, -16, 0);
     // scoring preload on alliance stake
@@ -416,8 +435,16 @@ void blue_qual_right(){
     chassis.turnToPoint(-24, 2, 750);
     chassis.moveToPoint(-24, 2, 1000);
 }
-void blue_elim_left(){}
-void blue_elim_right(){}
+
+
+
+
+
+
+
+
+
+
 void prog_skills(){
     chassis.setPose(-62, 0, 90);
     // scoring on alliance stake
@@ -432,20 +459,19 @@ void prog_skills(){
     mogo_mech.set_value(true);
     pros::delay(250);
     // picking up ring 1
-    chassis.turnToPoint(-28, -24, 500);
-    chassis.moveToPoint(-28, -24, 1000, {.minSpeed = 90});
+    chassis.turnToPoint(-24, -24, 500);
+    chassis.moveToPoint(-24, -24, 1000, {.minSpeed = 90});
     intake.move(127);
     // picking up ring 2
-    chassis.swingToPoint(0, -48, lemlib::DriveSide::RIGHT, 500, {.minSpeed = 90});
-    chassis.moveToPoint(6, -62, 1000);
+    chassis.swingToPoint(4, -58, lemlib::DriveSide::RIGHT, 500, {.minSpeed = 90});
+    chassis.moveToPoint(4, -58, 1500);
     chassis.waitUntilDone();
-    pros::delay(250);
-    chassis.moveToPoint(chassis.getPose().x-6, chassis.getPose().y+6, 1000, {.forwards = false});
-    chassis.turnToHeading(270, 750);
+    pros::delay(500);
     // picking up ring 3
-    chassis.moveToPoint(-24, -52, 1000);
+    chassis.turnToPoint(-36, -52, 750);
+    chassis.moveToPoint(-36, -52, 1000);
     chassis.waitUntilDone();
-    pros::delay(250);
+    pros::delay(500);
     // picking up ring 4
     chassis.moveToPoint(-44, -52, 1000);
     chassis.waitUntilDone();
@@ -453,12 +479,12 @@ void prog_skills(){
     // picking up ring 5
     chassis.moveToPoint(-56, -52, 1000);
     chassis.waitUntilDone();
-    pros::delay(250);
-    // picking up ring 6
-    chassis.turnToPoint(-42, -60, 750);
-    chassis.moveToPoint(-42, -60, 1000);
-    chassis.waitUntilDone();
     pros::delay(500);
+    // picking up ring 6
+    chassis.turnToPoint(-36, -62, 750);
+    chassis.moveToPoint(-36, -62, 1000);
+    chassis.waitUntilDone();
+    pros::delay(1000);
     // placing mogo 1 in corner
     chassis.turnToPoint(-68, -68, 500, {.forwards = false});
     chassis.moveToPoint(-68, -68, 1000, {.forwards = false});
@@ -467,12 +493,15 @@ void prog_skills(){
     intake.move(-127);
     pros::delay(250);
     intake.move(0);
+
+
+
     // moving into position for next side of field
     chassis.moveToPoint(-54, 0, 2000);
     chassis.waitUntilDone();
     // picking up mogo 2
-    chassis.turnToPoint(chassis.getPose().x+4, 28, 750, {.forwards = false});
-    chassis.moveToPoint(chassis.getPose().x+4, 28, 1000, {.forwards = false});
+    chassis.turnToPoint(chassis.getPose().x+1, 32, 750, {.forwards = false});
+    chassis.moveToPoint(chassis.getPose().x+1, 32, 1000, {.forwards = false, .maxSpeed = 60});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
     pros::delay(250);
@@ -481,40 +510,104 @@ void prog_skills(){
     chassis.moveToPoint(-24, 24, 1000);
     intake.move(127);
     chassis.waitUntilDone();
-    pros::delay(250);
+    pros::delay(500);
     // picking up ring 2
-    chassis.turnToPoint(0, 0, 500);
-    chassis.moveToPoint(0, 0, 1000);
-    chassis.waitUntilDone();
-    pros::delay(250);
-    // picking up ring 3
-    chassis.turnToPoint(-24, 24, 750);
-    chassis.moveToPoint(-24, 24, 1000);
-    chassis.moveToPoint(-30, 48, 1000);
-    chassis.waitUntilDone();
-    pros::delay(250);
-    // picking up ring 4
-    chassis.turnToPoint(-44, 46, 500);
-    chassis.moveToPoint(-44, 46, 1000);
+    chassis.turnToPoint(0, 60, 500);
+    chassis.moveToPoint(0, 60, 1500);
     chassis.waitUntilDone();
     pros::delay(500);
+    chassis.moveToPoint(0, 48, 1000, {.forwards = false});
+    // picking up ring 3
+    chassis.moveToPoint(-30, 48, 1000);
+    chassis.waitUntilDone();
+    pros::delay(500);
+    // picking up ring 4
+    chassis.turnToPoint(-46, 48, 500);
+    chassis.moveToPoint(-46, 48, 1000);
+    chassis.waitUntilDone();
+    pros::delay(750);
     // picking up ring 5
-    chassis.moveToPoint(-60, 46, 500);
+    chassis.moveToPoint(-64, chassis.getPose().y, 500);
     chassis.waitUntilDone();
     pros::delay(500);
     // picking up ring 6
-    chassis.turnToPoint(-50, 62, 500);
-    chassis.moveToPoint(-50, 62, 1000);
+    chassis.turnToPoint(-48, 68, 500);
+    chassis.moveToPoint(-48, 68, 1000);
     chassis.waitUntilDone();
     pros::delay(500);
     // placing mogo 2 in corner
-    chassis.turnToPoint(-64, 64, 500, {.forwards = false});
-    chassis.moveToPoint(-64, 64, 1000, {.forwards = false});
+    chassis.turnToPoint(-66, 70, 500, {.forwards = false});
+    chassis.moveToPoint(-66, 70, 1000, {.forwards = false});
     chassis.waitUntilDone();
     mogo_mech.set_value(false);
     intake.move(-127);
     pros::delay(250);
     intake.move(0);
+
+
+    // intaking ring 1 for mogo 3
+    chassis.moveToPoint(24, 50, 1750);
+    chassis.waitUntil(20);
+    intake.move(127);
+    chassis.waitUntilDone();
+    pros::delay(700);
+    intake.move(0);
+    // grabbing mogo 3
+    chassis.turnToPoint(46, 24, 750, {.forwards = false});
+    chassis.moveToPoint(46, 24, 1000, {.forwards = false});
+    chassis.turnToPoint(46, -6, 500, {.forwards = false});
+    chassis.moveToPoint(46, -6, 1000, {.forwards = false});
+    chassis.waitUntilDone();
+    mogo_mech.set_value(true);
+    pros::delay(250);
+    intake.move(127);
+    // picking up ring 2
+    chassis.moveToPoint(12, 32, 1250);
+    chassis.waitUntilDone();
+    pros::delay(500);
+    // picking up ring 3
+    chassis.turnToPoint(50, 50, 500);
+    chassis.moveToPoint(50, 50, 1000);
+    chassis.waitUntilDone();
+    pros::delay(250);
+    // picking up ring 4
+    chassis.moveToPoint(48, 24, 1000, {.forwards = false});
+    chassis.moveToPoint(58, 50, 1000);
+    chassis.waitUntilDone();
+    pros::delay(500);
+    // picking up ring 5
+    chassis.moveToPoint(48, -24, 2000, {.forwards = false});
+    chassis.turnToPoint(24, -24, 500);
+    chassis.moveToPoint(24, -24, 1000);
+    chassis.waitUntilDone();
+    pros::delay(500);
+    // picking up ring 6
+    chassis.turnToPoint(24, -48, 500);
+    chassis.moveToPoint(24, -48, 1000);
+    chassis.waitUntilDone();
+    pros::delay(500);
+    // placing mogo 3 in corner
+
+
+    chassis.turnToPoint(70, -70, 750, {.forwards = false});
+    chassis.waitUntilDone();
+    mogo_mech.set_value(false);
+    intake.move(-127);
+    pros::delay(350);
+    intake.move(0);
+    chassis.moveToPoint(66, -70, 1000, {.forwards = false});
+    chassis.waitUntilDone();
+
+
+
+    // picking up mogo 4 and placing in cornern
+    chassis.moveToPoint(48, -66, 500);
+    chassis.moveToPoint(48, 0, 1000);
+    chassis.turnToPoint(70, 24, 750);
+    intake.move(0);
+    chassis.moveToPoint(70, 24, 1000);
+    chassis.turnToPoint(70, 70, 500);
+    chassis.moveToPoint(70, 66, 2000, {.minSpeed = 100});
 }
 
 
@@ -595,40 +688,40 @@ void initialize() {
     //         }
     //     }
     // });
-    pros::Task selector_task([]{
-        while(!auto_started){
-            while(!(selector_switch.get_value() == 1)){
-                pros::delay(20);            
-            }
-            console.clear();
-            selector_value = selector_knob.get_value();
-            if(selector_value < 90){
-                auton_selected = 1;
-                console.println("RED QUAL LEFT");
-            } else if(selector_value > 90 && selector_value < 700) {
-                auton_selected = 2;
-                console.println("RED QUAL RIGHT");
-            } else if(selector_value > 700 && selector_value < 1350){
-                auton_selected = 3;
-                console.println("RED ELIM LEFT");
-            } else if(selector_value > 1350 && selector_value < 1900){
-                auton_selected = 4;
-                console.println("RED ELIM RIGHT");
-            } else if(selector_value > 1900 && selector_value < 2500){
-                auton_selected = 5;
-                console.println("BLUE QUAL LEFT");
-            } else if(selector_value > 2500 && selector_value < 3200){
-                auton_selected = 6;
-                console.println("BLUE QUAL RIGHT");
-            } else if(selector_value > 3200 && selector_value < 4095){
-                auton_selected = 7;
-                console.println("BLUE ELIM LEFT");
-            } else {
-                auton_selected = 8;
-                console.println("BLUE ELIM RIGHT");
-            }
-        }
-    });
+    // pros::Task selector_task([]{
+    //     while(!auto_started){
+    //         while(!(selector_switch.get_value() == 1)){
+    //             pros::delay(20);            
+    //         }
+    //         console.clear();
+    //         selector_value = selector_knob.get_value();
+    //         if(selector_value < 90){
+    //             auton_selected = 1;
+    //             console.println("RED QUAL LEFT");
+    //         } else if(selector_value > 90 && selector_value < 700) {
+    //             auton_selected = 2;
+    //             console.println("RED QUAL RIGHT");
+    //         } else if(selector_value > 700 && selector_value < 1350){
+    //             auton_selected = 3;
+    //             console.println("RED ELIM LEFT");
+    //         } else if(selector_value > 1350 && selector_value < 1900){
+    //             auton_selected = 4;
+    //             console.println("RED ELIM RIGHT");
+    //         } else if(selector_value > 1900 && selector_value < 2500){
+    //             auton_selected = 5;
+    //             console.println("BLUE QUAL LEFT");
+    //         } else if(selector_value > 2500 && selector_value < 3200){
+    //             auton_selected = 6;
+    //             console.println("BLUE QUAL RIGHT");
+    //         } else if(selector_value > 3200 && selector_value < 4095){
+    //             auton_selected = 7;
+    //             console.println("BLUE ELIM LEFT");
+    //         } else {
+    //             auton_selected = 8;
+    //             console.println("BLUE ELIM RIGHT");
+    //         }
+    //     }
+    // });
 }
 
 
@@ -663,33 +756,20 @@ void competition_initialize() {}
  */
 void autonomous() {
     auto_started = true;
-    red_left_6ring_nobar();
-    // switch(auton_selected) {
-    //     case 1:
-    //         red_qual_left();
-    //         break;
-    //     case 2:
-    //         red_qual_right();
-    //         break;
-    //     case 3:
-    //         red_elim_left();
-    //         break;
-    //     case 4:
-    //         red_elim_right();
-    //         break;
-    //     case 5:
-    //         blue_qual_left();
-    //         break;
-    //     case 6:
-    //         blue_qual_right();
-    //         break;
-    //     case 7:
-    //         blue_elim_left();
-    //         break;
-    //     case 8:
-    //         blue_elim_right();
-    //         break;
-    // }
+    // red_left_5ring_cornerclear(); //-> scores 6 rings on a single mogo. Start bordering two tiles, facing 180 deg.
+    // red_left_5ring_bar(); //-> scores 5 rings on a single mogo and touches bar. Start bordering two tiles, facing 180 deg.
+    // red_left_sawp(); //-> Solo AWP. Start bordering two tiles, facing 0 deg.
+    //red_right_aStake_bar(); //-> Partial AWP except for moving partner off line. Start Bordering two tiles, facing 0 deg.
+    //red_right_rush(); //-> Rush mid mogo.
+
+    //blue_right_5ring_cornerclear(); //-> scores 6 rings on a single mogo. Start bordering two tiles, facing 180 deg.
+    //blue_right_5ring_bar(); //-> scores 5 rings on a single mogo and touches bar. Start bordering two tiles, facing 180 deg.
+    // blue_right_sawp(); //-> Solo AWP. Start bordering two tiles, facing 0 deg.
+    //blue_right_aStake_bar(); //-> Partial AWP except for moving partner off line. Start Bordering two tiles, facing 0 deg.
+    //blue_left_rush(); //-> Rush mid mogo.
+
+    
+    prog_skills();
     
 }
 
@@ -698,6 +778,8 @@ bool b_pressed = false;
 bool right_pressed = false;
 bool down_pressed = false;
 int arm_velocity = 127;
+bool hang_up = false;
+int arm_softstop = -3000;
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -734,7 +816,11 @@ void opcontrol() {
             ring_mech_on = true;
 		} else if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)){
             if(ring_mech_on){
-                intake.move(0);
+                intake.move(-127);
+                pros::delay(75);
+                intake.move(0);\
+
+
                 ring_mech_on = false;
             } else {
                 intake.move(-127);
@@ -772,19 +858,24 @@ void opcontrol() {
         }
 
         if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){
-            arm_motor.move(arm_velocity);
+            if(arm_rot.get_position() > arm_softstop){
+                arm_motor.move(arm_velocity);
+            } else{
+                arm_motor.move(0);
+            }
         } else if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
             arm_motor.move(-arm_velocity);
             
         } else if(!arm_moving){
             arm_motor.move(0);
         }
-        
-        // manual color sort override
+
         if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)){
-            red = true;
-        } else if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)){
-            red = false;
+            arm_softstop = -3000;
+        }
+        
+        if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)){
+            arm_softstop = 0;
         }
 
         // delay to save resources
