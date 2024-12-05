@@ -152,7 +152,7 @@ void arm_state_function(){
 
                 arm_motor.move(0);
             } else if(get_arm_position() < 75){
-                while(get_arm_position() < 105){
+                while(get_arm_position() < 110){
                     arm_motor.move(127);
                     pros::delay(10);
                 }
@@ -161,7 +161,7 @@ void arm_state_function(){
             }
         } else if(arm_state == UP){ // make arm go up
             if(get_arm_position() < 455){
-                while(get_arm_position() < 455){
+                while(get_arm_position() < 450){
                     arm_motor.move(127);
                     pros::delay(20);
                     allow_score = false;

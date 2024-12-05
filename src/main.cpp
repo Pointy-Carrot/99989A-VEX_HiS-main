@@ -111,7 +111,7 @@ void opcontrol() {
     pros::Controller controller(CONTROLLER_MASTER);
 	bool intake_running = false;
     bool hooks_running = false;
-    
+    console.println("heee");
 
 	while (true) {
 		// get left y and right x positions
