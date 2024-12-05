@@ -30,7 +30,6 @@ void initialize() {
     arm_motor.set_brake_mode(pros::MotorBrake::hold);
     hooks.set_brake_mode(pros::MotorBrake::hold);
     arm_rot.reset();
-    hooks_state_switch();
     // pros::Task sort_task([]{
     //     while(true){
     //         if(!red){
