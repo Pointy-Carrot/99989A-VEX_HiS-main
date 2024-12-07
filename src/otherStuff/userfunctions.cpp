@@ -29,7 +29,6 @@ int arm_softstop = -3000;
 
 
 
-
 Arm_State arm_state = DOWN;
 
 void eject_ring(){
@@ -136,23 +135,22 @@ void hooks_state_switch(){
 void arm_state_function(){
     while(1){
         if(arm_state == DOWN){ // make arm go down
-            while(!(arm_down_switch.get_value() == 1)){
+            while(get_arm_position() > 1800){
                 arm_motor.move(-127);
                 pros::delay(10);
             }
             
-            arm_motor.move(0);
-            arm_rot.reset();
+            arm_motor.move(-40);
         } else if(arm_state == LOAD){ // make arm go to loading position
-            if(get_arm_position() > 200){
-                while(get_arm_position() > 170){
+            if(get_arm_position() > 3000){
+                while(get_arm_position() > 2500){
                     arm_motor.move(-127);
                     pros::delay(10);
                 }
 
                 arm_motor.move(0);
-            } else if(get_arm_position() < 75){
-                while(get_arm_position() < 110){
+            } else if(get_arm_position() < 2000){
+                while(get_arm_position() < 2250){
                     arm_motor.move(127);
                     pros::delay(10);
                 }
@@ -160,8 +158,8 @@ void arm_state_function(){
                 arm_motor.move(0);
             }
         } else if(arm_state == UP){ // make arm go up
-            if(get_arm_position() < 455){
-                while(get_arm_position() < 450){
+            if(get_arm_position() < 6000){
+                while(get_arm_position() < 3900){
                     arm_motor.move(127);
                     pros::delay(20);
                     allow_score = false;

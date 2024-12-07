@@ -13,7 +13,7 @@
 // config
 pros::Rotation vert_tracker(-2);
 pros::Rotation horiz_tracker(13);
-pros::adi::Encoder arm_rot('E', 'F');
+pros::adi::Potentiometer arm_rot('E');
 pros::Rotation hooks_rot(3);
 pros::Optical sorter(20);
 pros::adi::DigitalIn arm_down_switch('A');
