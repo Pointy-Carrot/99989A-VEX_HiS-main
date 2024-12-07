@@ -23,23 +23,14 @@ void initialize() {
     chassis.calibrate(); // calibrate sensors
     console.focus();
     hooks_rot.set_position(0);
+    sorter.set_led_pwm(100);
     pros::Controller controller(CONTROLLER_MASTER);
     pros::Task hooks_state_switch_task(hooks_state_switch);
     pros::Task arm_state_switch_task(arm_state_function);
+    pros::Task color_sort_task(select_color_to_score);
     hooks_rot.set_data_rate(5);
     arm_motor.set_brake_mode(pros::MotorBrake::hold);
     hooks.set_brake_mode(pros::MotorBrake::hold);
-    // pros::Task sort_task([]{
-    //     while(true){
-    //         if(!red){
-    //             color_sort(RED);
-    //             pros::delay(20);
-    //         } else if(red){
-    //             color_sort(BLUE);
-    //             pros::delay(20);
-    //         }
-    //     }
-    // });
 }
 
 
@@ -109,6 +100,7 @@ void opcontrol() {
     pros::Controller controller(CONTROLLER_MASTER);
 	bool intake_running = false;
     bool hooks_running = false;
+    
 
 	while (true) {
 		// get left y and right x positions
@@ -116,16 +108,19 @@ void opcontrol() {
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         // console.println(std::to_string(chassis.getPose().x));
         // console.println(std::to_string(chassis.getPose().y));
+        console.println(std::to_string(get_hooks_position()));
         // move the robot
         chassis.arcade(leftY, rightX);
 		// intake controls
 		if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)){
+            activate_sorter();
 			intake.move(127);
             hooks.move(127);
             intake_running = true;
             hooks_running = true;
             first_time_setting_hooks = false;
 		} else if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)){
+            deactivate_sorter();
             if(allow_score){
                 if(intake_running){
                     if(hooks_running){
@@ -147,6 +142,7 @@ void opcontrol() {
                     intake_running = true;
                     hooks_running = true;
                     first_time_setting_hooks = false;
+                    
                 }
             }
 		}
@@ -189,10 +185,15 @@ void opcontrol() {
             arm_down_control();
         }
 
-        
+        if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)){
+            while(get_hooks_position() > 45000 || get_hooks_position() < 35000){
+                pros::delay(10);
+            }
+            hooks.move(0);
+        }
 
         // delay to save resources
         pros::delay(25);
-        // console.clear();
+        console.clear();
 	}
 }

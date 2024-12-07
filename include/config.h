@@ -3,6 +3,7 @@
 #include "lemlib/chassis/chassis.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "pros/adi.hpp"
+#include "pros/colors.hpp"
 #include "pros/optical.hpp"
 #include "pros/rotation.hpp"
 #include "robodash/views/selector.hpp"
@@ -18,6 +19,8 @@ extern pros::adi::DigitalIn arm_down_switch;
 
 extern pros::adi::DigitalOut mogo_mech;
 extern pros::adi::DigitalOut doinker;
+extern pros::adi::DigitalOut rush_arm;
+extern pros::adi::DigitalOut rush_arm_clamp;
 
 extern pros::Motor arm_motor;
 extern pros::Motor intake;

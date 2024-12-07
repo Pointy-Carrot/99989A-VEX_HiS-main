@@ -7,7 +7,6 @@
 
 
 bool ejecting = false;
-bool red = true;
 bool arm_moving = false;
 double current_position;
 bool auto_started = false;
@@ -26,16 +25,19 @@ bool down_pressed = false;
 int arm_velocity = 127;
 bool hang_up = false;
 int arm_softstop = -3000;
+bool score_red = false;
+bool score_blue = false;
 
 
-
+ColorSort colorsort = NOSORT;
+Color alliance = BLUE;
 Arm_State arm_state = DOWN;
 
+
 void eject_ring(){
-    pros::delay(40);
-    intake.move(-127);
+    hooks.move(-127);
     pros::delay(150);
-    intake.move(127);
+    hooks.move(127);
 }
 
 int get_hooks_position(){
@@ -46,46 +48,68 @@ int get_arm_position(){
     return arm_rot.get_value();
 }
 
+void deactivate_sorter(){
+    colorsort = NOSORT;
+}
+void activate_sorter(){
+    if(alliance == RED){
+        colorsort = SCORERED;
+    } else if(alliance == BLUE){
+        colorsort = SCOREBLUE;
+    }
+}
+
+bool detect_red(){
+    if(sorter.get_proximity() > 100){
+        if((sorter.get_hue() > 340 || sorter.get_hue() < 30) && !ejecting){
+            return true;
+        }
+    }
+}
+
+bool detect_blue(){
+    if(sorter.get_proximity() > 100){
+        if((sorter.get_hue() > 180 && sorter.get_hue() < 300) && !ejecting){
+            return true;
+        }
+    }
+}
+
 void sort_red(){
-    sorter.set_led_pwm(35);
-    if(sorter.get_proximity() > 150){
-        pros::delay(50);
-        if((sorter.get_hue() > 350 || sorter.get_hue() < 10) && !ejecting){
+    if(sorter.get_proximity() > 100){
+        if((sorter.get_hue() > 340 || sorter.get_hue() < 30) && !ejecting){
             ejecting = true;
-            intake.set_brake_mode(pros::MotorBrake::hold);
-            pros::delay(100);
-            // while(!(get_hook_position() > 9000)){
-            //     pros::delay(10);/
-            // }
+            while(get_hooks_position() > 50000 || get_hooks_position() < 35000){
+                pros::delay(10);
+            }
             eject_ring();
-            intake.set_brake_mode(pros::MotorBrake::coast);
             ejecting = false;
         }
     }
 }
 
 void sort_blue(){
-    sorter.set_led_pwm(35);
-    if(sorter.get_proximity() > 150){
-        pros::delay(50);
+    if(sorter.get_proximity() > 100){
         if((sorter.get_hue() > 180 && sorter.get_hue() < 300) && !ejecting){
             ejecting = true;
             intake.set_brake_mode(pros::MotorBrake::hold);
-            // while(!(get_hook_position() > 9000)){
-            //     pros::delay(10);
-            // }
+            while(get_hooks_position() > 50000 || get_hooks_position() < 35000){
+                pros::delay(10);
+            }
             eject_ring();
-            intake.set_brake_mode(pros::MotorBrake::coast);
             ejecting = false;
         }
     }
 }
 
-void color_sort(Color color){
-    if(color == RED){
-        sort_red();
-    } else if(color == BLUE){
-        sort_blue();
+void select_color_to_score(){
+    while(1){
+        if(colorsort == SCORERED){
+            sort_blue();
+        } else if(colorsort == SCOREBLUE){
+            sort_red();
+        }
+        pros::delay(20);
     }
 }
 
@@ -135,12 +159,12 @@ void hooks_state_switch(){
 void arm_state_function(){
     while(1){
         if(arm_state == DOWN){ // make arm go down
-            while(get_arm_position() > 1800){
+            while(get_arm_position() > 1900){
                 arm_motor.move(-127);
                 pros::delay(10);
             }
             
-            arm_motor.move(-40);
+            arm_motor.move(-20);
         } else if(arm_state == LOAD){ // make arm go to loading position
             if(get_arm_position() > 3000){
                 while(get_arm_position() > 2500){
