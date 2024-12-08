@@ -35,7 +35,7 @@ pros::MotorGroup right_motor_group({-15, 19, 11}, pros::MotorGears::blue);
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&left_motor_group, // left motor group
                               &right_motor_group, // right motor group
-                              13, // 14.5 inch track width
+                              12.375, // 12.375 inch track width
                               lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
                               450, // drivetrain rpm is 450
                               8 // horizontal drift is 2 (for now)
@@ -45,8 +45,8 @@ lemlib::Drivetrain drivetrain(&left_motor_group, // left motor group
 pros::Imu imu(16);
 
 // tracking wheels
-lemlib::TrackingWheel vertical_tracking_wheel(&vert_tracker, lemlib::Omniwheel::NEW_2, .75);
-lemlib::TrackingWheel horizontal_tracking_wheel(&horiz_tracker, lemlib::Omniwheel::NEW_2, 2);
+lemlib::TrackingWheel vertical_tracking_wheel(&vert_tracker, lemlib::Omniwheel::NEW_2, -1);
+lemlib::TrackingWheel horizontal_tracking_wheel(&horiz_tracker, lemlib::Omniwheel::NEW_2, -1.5);
 
 // odometry settings
 lemlib::OdomSensors sensors(&vertical_tracking_wheel, // vertical tracking wheel 1, set to null
@@ -57,9 +57,9 @@ lemlib::OdomSensors sensors(&vertical_tracking_wheel, // vertical tracking wheel
 );
 
 // lateral PID controller
-lemlib::ControllerSettings lateral_controller(4, // proportional gain (kP)
+lemlib::ControllerSettings lateral_controller(16, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              2, // derivative gain (kD)
+                                              72, // derivative gain (kD)
                                               3, // anti windup
                                               1, // small error range, in inches
                                               100, // small error range timeout, in milliseconds
@@ -71,7 +71,7 @@ lemlib::ControllerSettings lateral_controller(4, // proportional gain (kP)
 // angular PID controller
 lemlib::ControllerSettings angular_controller(4, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              32, // derivative gain (kD)
+                                              31, // derivative gain (kD)
                                               3, // anti windup
                                               1, // small error range, in degrees
                                               100, // small error range timeout, in milliseconds

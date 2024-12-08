@@ -27,6 +27,7 @@ bool hang_up = false;
 int arm_softstop = -3000;
 bool score_red = false;
 bool score_blue = false;
+bool intake_running = false;
 
 
 ColorSort colorsort = NOSORT;
@@ -79,7 +80,7 @@ void sort_red(){
     if(sorter.get_proximity() > 100){
         if((sorter.get_hue() > 340 || sorter.get_hue() < 30) && !ejecting){
             ejecting = true;
-            while(get_hooks_position() > 50000 || get_hooks_position() < 35000){
+            while(get_hooks_position() < 46000){
                 pros::delay(10);
             }
             eject_ring();
@@ -93,7 +94,7 @@ void sort_blue(){
         if((sorter.get_hue() > 180 && sorter.get_hue() < 300) && !ejecting){
             ejecting = true;
             intake.set_brake_mode(pros::MotorBrake::hold);
-            while(get_hooks_position() > 50000 || get_hooks_position() < 35000){
+            while(get_hooks_position() < 46000){
                 pros::delay(10);
             }
             eject_ring();
@@ -163,8 +164,11 @@ void arm_state_function(){
                 arm_motor.move(-127);
                 pros::delay(10);
             }
-            
-            arm_motor.move(-20);
+            if(intake_running){
+                arm_motor.move(-20);
+            } else{
+                arm_motor.move(0);
+            }
         } else if(arm_state == LOAD){ // make arm go to loading position
             if(get_arm_position() > 3000){
                 while(get_arm_position() > 2500){

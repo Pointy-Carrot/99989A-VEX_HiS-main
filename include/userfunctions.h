@@ -55,3 +55,4 @@ extern bool hang_up;
 extern int arm_softstop;
 extern bool score_red;
 extern bool score_blue;
+extern bool intake_running;

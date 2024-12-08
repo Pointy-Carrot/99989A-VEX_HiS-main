@@ -77,7 +77,7 @@ void autonomous() {
     //blue_left_rush(); //-> Rush mid mogo.
 
     
-    // prog_skills();
+    prog_skills();
     
 }
 
@@ -98,7 +98,6 @@ void autonomous() {
 void opcontrol() {
 	console.focus();
     pros::Controller controller(CONTROLLER_MASTER);
-	bool intake_running = false;
     bool hooks_running = false;
     
 
