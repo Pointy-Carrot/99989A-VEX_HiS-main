@@ -31,15 +31,16 @@ void red_mogorush_elim(){
     chassis.waitUntil(5);
     rush_arm.set_value(false);
     chassis.waitUntilDone();
-    chassis.moveToPose(-12, -56, 270, 1000, {.forwards = false}); // picking up mogo
+    chassis.moveToPose(-10, -58, 270, 1000, {.forwards = false}); // picking up mogo
     rush_arm_clamp.set_value(false);
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
     intake_running = true; // scoring on mogo
     pros::delay(250);
-    hooks.move(127);
     chassis.moveToPose(-48, -48, 300, 1000); // placing mogo in corner
     intake.move(-127);
+    pros::delay(350);
+    hooks.move(127);
     chassis.turnToHeading(45, 750);
     chassis.waitUntilDone();
     mogo_mech.set_value(false);
@@ -70,10 +71,11 @@ void red_mogorush_elim(){
     hooks.move(0);
     intake.move(0);
     mogo_mech.set_value(true);
-    chassis.turnToHeading(45, 500, {.direction = lemlib::AngularDirection::CW_CLOCKWISE});
-    chassis.moveToPose(-58, 0, 0, 1000, {.forwards = false});
+    chassis.turnToHeading(45, 500, {});
+    chassis.moveToPose(-56, 0, 0, 1000, {.forwards = false});
+    chassis.moveToPoint(-56, 5.5, 500);
     chassis.turnToHeading(90, 500);
-    chassis.moveToPoint(-70, 0, 500, {.forwards = false});
+    chassis.moveToPoint(-64, 5.5, 500, {.forwards = false});
     pros::delay(250);
     intake.move(127);
     hooks.move(127);
