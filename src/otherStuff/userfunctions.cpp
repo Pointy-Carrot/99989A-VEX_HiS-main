@@ -34,6 +34,13 @@ ColorSort colorsort = NOSORT;
 Color alliance = BLUE;
 Arm_State arm_state = DOWN;
 
+void alliance_red(){
+    alliance = RED;
+}
+
+void alliance_blue(){
+    alliance = BLUE;
+}
 
 void eject_ring(){
     hooks.move(-127);
@@ -62,7 +69,7 @@ void activate_sorter(){
 
 bool detect_red(){
     if(sorter.get_proximity() > 100){
-        if((sorter.get_hue() > 340 || sorter.get_hue() < 30) && !ejecting){
+        if((sorter.get_hue() > 340 || sorter.get_hue() < 30)){
             return true;
         }
     }
@@ -70,7 +77,7 @@ bool detect_red(){
 
 bool detect_blue(){
     if(sorter.get_proximity() > 100){
-        if((sorter.get_hue() > 180 && sorter.get_hue() < 300) && !ejecting){
+        if((sorter.get_hue() > 180 && sorter.get_hue() < 300)){
             return true;
         }
     }
@@ -165,7 +172,7 @@ void arm_state_function(){
                 pros::delay(10);
             }
             if(intake_running){
-                arm_motor.move(-20);
+                arm_motor.move(-40);
             } else{
                 arm_motor.move(0);
             }

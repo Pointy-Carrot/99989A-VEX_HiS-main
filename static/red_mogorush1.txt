@@ -1,0 +1,25 @@
+-49.417, -60.581, 100
+-47.417, -60.581, 100
+-45.417, -60.581, 100
+-43.417, -60.581, 100
+-41.417, -60.581, 97.06
+-39.417, -60.581, 93.374
+-37.418, -60.525, 89.537
+-35.423, -60.397, 85.527
+-33.431, -60.218, 81.32
+-31.444, -59.987, 76.883
+-29.464, -59.708, 72.173
+-27.49, -59.387, 67.134
+-25.522, -59.031, 61.685
+-23.559, -58.646, 55.705
+-21.601, -58.238, 49
+-21.204, -58.152, 0
+-21.204, -58.152, 0
+-1.649, -53.953, 0
+endData
+175.5
+100
+200
+-49.417, -60.581, -44.023, -60.581, -44.023, -60.581, -38.628, -60.581
+-38.628, -60.581, -33.63, -60.384, -28.971, -59.832, -21.204, -58.152
+#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":14.5,"robotHeight":16,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"V5RC 2025 - High Stakes","signature":"V5RC 2025 - High Stakes","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"dd7CWS6dJK","x":-49.41707473718733,"y":-60.58090421288955,"lock":false,"visible":true,"heading":0,"__type":"end-point"},{"uid":"bUjApF0RyJ","x":-38.628191707250465,"y":-60.58090421288955,"lock":false,"visible":true,"heading":0,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"zGG54KNx2D"},{"controls":[{"uid":"bUjApF0RyJ","x":-38.628191707250465,"y":-60.58090421288955,"lock":false,"visible":true,"heading":0,"__type":"end-point"},{"uid":"G8RLTNecWF","x":-33.63043864832038,"y":-60.383800074178474,"lock":false,"visible":true,"__type":"control"},{"uid":"RJf4SjrG8k","x":-28.971143780437846,"y":-59.83170998133903,"lock":false,"visible":true,"__type":"control"},{"uid":"ssUrntWFoy","x":-21.20351827408857,"y":-58.15222338537162,"lock":false,"visible":true,"heading":0,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"bHOJ0FOO1C"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":49,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.142},"maxDecelerationRate":175.5},"name":"Path","uid":"dwG4oDdhC6","lock":false,"visible":true}]}

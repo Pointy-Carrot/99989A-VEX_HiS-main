@@ -76,8 +76,8 @@ void autonomous() {
     //blue_right_aStake_bar(); //-> Partial AWP except for moving partner off line. Start Bordering two tiles, facing 0 deg.
     //blue_left_rush(); //-> Rush mid mogo.
 
-    
-    prog_skills();
+    red_mogorush_elim();
+    // prog_skills();
     
 }
 
@@ -107,7 +107,8 @@ void opcontrol() {
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         // console.println(std::to_string(chassis.getPose().x));
         // console.println(std::to_string(chassis.getPose().y));
-        console.println(std::to_string(get_hooks_position()));
+        console.println(std::to_string(detect_red()));
+        console.println(std::to_string(detect_blue()));
         // move the robot
         chassis.arcade(leftY, rightX);
 		// intake controls

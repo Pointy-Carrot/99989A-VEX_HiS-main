@@ -33,6 +33,8 @@ void deactivate_sorter();
 void activate_sorter();
 bool detect_red();
 bool detect_blue();
+void alliance_red();
+void alliance_blue();
 extern bool ejecting;
 extern bool red;
 extern bool arm_moving ;
