@@ -76,7 +76,7 @@ void autonomous() {
     //blue_right_aStake_bar(); //-> Partial AWP except for moving partner off line. Start Bordering two tiles, facing 0 deg.
     //blue_left_rush(); //-> Rush mid mogo.
 
-    red_mogorush_elim();
+    blue_mogorush_sawp();
     // prog_skills();
     
 }
@@ -99,7 +99,10 @@ void opcontrol() {
 	console.focus();
     pros::Controller controller(CONTROLLER_MASTER);
     bool hooks_running = false;
-    
+    alliance_red();
+    doinker.set_value(false);
+    rush_arm.set_value(false);
+
 
 	while (true) {
 		// get left y and right x positions
@@ -186,10 +189,13 @@ void opcontrol() {
         }
 
         if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)){
-            while(get_hooks_position() > 45000 || get_hooks_position() < 35000){
-                pros::delay(10);
+            if(descore_mech_activated){
+                rush_arm.set_value(false);
+                descore_mech_activated = false;
+            } else{
+                rush_arm.set_value(true);
+                descore_mech_activated = true;
             }
-            hooks.move(0);
         }
 
         // delay to save resources

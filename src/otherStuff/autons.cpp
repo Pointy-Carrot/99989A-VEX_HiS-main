@@ -10,81 +10,127 @@ ASSET(red_mogorush1_txt);
 void red_sawp(){};
 void red_5ring_sawp(){};
 void red_5ring_elim(){};
-void red_mogorush_sawp(){};
-void red_mogorush_elim(){
+void red_mogorush_sawp(){
     alliance_red();
     activate_sorter();
-    chassis.setPose(-49.5, -60.5, 270);
-    
-    chassis.follow(red_mogorush1_txt, 13, 1000, false); // rushing mogo
-    chassis.waitUntil(5);
+    chassis.setPose(-50, -59, 90);
+    // mogo rush
+    chassis.moveToPoint(-18, -59, 1000, {.minSpeed = 127});
     rush_arm.set_value(true);
-    rush_arm_clamp.set_value(true);
     chassis.waitUntilDone();
-    pros::delay(250);
-    rush_arm_clamp.set_value(false);
-    chassis.moveToPose(-32, -56, 300, 1000);
+    chassis.turnToHeading(70, 500);
     chassis.waitUntilDone();
-    rush_arm_clamp.set_value(true);
-    pros::delay(250);
-    chassis.moveToPoint(-42, -51, 750);
-    chassis.waitUntil(5);
     rush_arm.set_value(false);
+    pros::delay(125);
+    // pulling back mogo
+    chassis.moveToPoint(-38, -62, 1000, {.forwards = false});
     chassis.waitUntilDone();
-    chassis.moveToPose(-10, -58, 270, 1000, {.forwards = false}); // picking up mogo
-    rush_arm_clamp.set_value(false);
+    rush_arm.set_value(true);
+    pros::delay(100);
+    chassis.moveToPoint(-36, -62, 500);
+    chassis.moveToPoint(-42, -60, 1000, {.forwards = false});
+    chassis.waitUntilDone();
+    rush_arm.set_value(false);
+    pros::delay(250);
+    // picking up mogo
+    chassis.turnToHeading(270, 750, {.direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE});
+    chassis.moveToPoint(-12, -61, 2000, {.forwards = false, .maxSpeed = 60});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
-    intake_running = true; // scoring on mogo
-    pros::delay(250);
-    chassis.moveToPose(-48, -48, 300, 1000); // placing mogo in corner
-    intake.move(-127);
-    pros::delay(350);
+    intake_running = true;
+    pros::delay(125);
+    // scoring on mogo
+    chassis.moveToPoint(-40, -60, 1000);
+    chassis.waitUntil(10);
+    intake.move(127);
     hooks.move(127);
-    chassis.turnToHeading(45, 750);
+    // dropping mogo
+    chassis.turnToHeading(90, 750);
     chassis.waitUntilDone();
     mogo_mech.set_value(false);
-    chassis.moveToPoint(-24, -44, 750); // picking up red ring
-    intake.move(127);
     hooks.move(0);
-    chassis.waitUntilDone();
-    pros::delay(250);
-    chassis.moveToPoint(-24, chassis.getPose().y, 750, {.forwards = false}); // picking up mogo
+    intake_running = false;
+    // picking up new mogo
+    chassis.moveToPoint(-22, -48, 1000);
     chassis.turnToHeading(180, 500);
-    chassis.moveToPoint(-24, -20, 750, {.forwards = false, .maxSpeed = 70});
+    chassis.moveToPoint(-22, -22, 1000, {.forwards = false, .maxSpeed = 60});
     chassis.waitUntilDone();
     mogo_mech.set_value(true);
-    pros::delay(250);
-    chassis.turnToPoint(-48, -32, 500);
-    pros::delay(350);
+    // scoring on mogo
+    intake_running = true;
+    chassis.turnToPoint(-52, 8, 750);
+    chassis.moveToPoint(-70, 24, 2000, {.maxSpeed = 40});
     hooks.move(127);
-    chassis.moveToPoint(-48, -32, 1000);
-    chassis.turnToHeading(0, 500);
-    mogo_mech.set_value(false);
-    chassis.moveToPoint(-48, -28, 750);
     chassis.waitUntilDone();
-    deactivate_sorter();
-    chassis.moveToPoint(-48, 18, 2000, {.maxSpeed = 50});
-    chassis.waitUntilDone();
-    // might want to add variable here to check whether or not a blue ring has been sorted yet
-    pros::delay(250);
-    hooks.move(0);
-    intake.move(0);
-    mogo_mech.set_value(true);
-    chassis.turnToHeading(45, 500, {});
-    chassis.moveToPose(-56, 0, 0, 1000, {.forwards = false});
-    chassis.moveToPoint(-56, 5.5, 500);
-    chassis.turnToHeading(90, 500);
-    chassis.moveToPoint(-64, 5.5, 500, {.forwards = false});
-    pros::delay(250);
-    intake.move(127);
-    hooks.move(127);
+    // touching evation bar
+    chassis.turnToPoint(-38, 12, 500);
+    chassis.moveToPoint(-38, 12, 1000);
+    doinker.set_value(true);
 };
+void red_mogorush_elim(){};
 void red_sig_sawp(){};
 void blue_sawp(){};
 void blue_5ring_sawp(){};
 void blue_5ring_elim(){};
-void blue_mogorush_sawp(){};
+void blue_mogorush_sawp(){
+    alliance_blue();
+    activate_sorter();
+    chassis.setPose(50, -37, 270);
+    // mogo rush
+    chassis.moveToPoint(17.25, -37, 1000, {.minSpeed = 127});
+    rush_arm.set_value(true);
+    chassis.waitUntilDone();
+    chassis.turnToHeading(250, 500);
+    chassis.waitUntilDone();
+    rush_arm.set_value(false);
+    pros::delay(125);
+    // pulling back mogo
+    chassis.moveToPoint(38, -34, 1000, {.forwards = false});
+    chassis.waitUntilDone();
+    rush_arm.set_value(true);
+    pros::delay(100);
+    chassis.moveToPoint(36, -34, 500);
+    chassis.moveToPoint(42, -36, 1000, {.forwards = false});
+    chassis.waitUntilDone();
+    rush_arm.set_value(false);
+    pros::delay(250);
+    // picking up mogo
+    chassis.turnToHeading(90, 750, {.direction = lemlib::AngularDirection::CW_CLOCKWISE});
+    chassis.moveToPoint(12, -39, 2000, {.forwards = false, .maxSpeed = 60});
+    chassis.waitUntilDone();
+    mogo_mech.set_value(true);
+    intake_running = true;
+    pros::delay(125);
+    // scoring on mogo
+    chassis.moveToPoint(40, -36, 1000);
+    chassis.waitUntil(10);
+    intake.move(127);
+    hooks.move(127);
+    // dropping mogo
+    chassis.turnToHeading(270, 750);
+    chassis.waitUntilDone();
+    mogo_mech.set_value(false);
+    stop_hooks();
+    intake_running = false;
+    // picking up new mogo
+    chassis.moveToPoint(22, -48, 1000);
+    chassis.turnToHeading(180, 500);
+    chassis.moveToPoint(14, -18, 1000, {.forwards = false, .maxSpeed = 60});
+    chassis.waitUntilDone();
+    mogo_mech.set_value(true);
+    // scoring on mogo
+    intake_running = true;
+    chassis.turnToPoint(52, 8, 750);
+    chassis.moveToPoint(75, 24, 2000, {.maxSpeed = 40});
+    hooks.move(127);
+    chassis.waitUntilDone();
+    // touching evation bar
+    chassis.turnToPoint(36, chassis.getPose().y+3, 500);
+    chassis.moveToPoint(36, chassis.getPose().y+3, 1000);
+    chassis.waitUntilDone();
+    rush_arm.set_value(true);
+    chassis.turnToHeading(270, 500);
+};
 void blue_mogorush_elim(){};
 void blue_sig_sawp(){};
 void prog_skills(){};

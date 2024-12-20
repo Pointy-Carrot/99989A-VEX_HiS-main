@@ -20,7 +20,6 @@ extern pros::adi::DigitalIn arm_down_switch;
 extern pros::adi::DigitalOut mogo_mech;
 extern pros::adi::DigitalOut doinker;
 extern pros::adi::DigitalOut rush_arm;
-extern pros::adi::DigitalOut rush_arm_clamp;
 
 extern pros::Motor arm_motor;
 extern pros::Motor intake;

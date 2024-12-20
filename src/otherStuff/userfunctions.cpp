@@ -28,6 +28,7 @@ int arm_softstop = -3000;
 bool score_red = false;
 bool score_blue = false;
 bool intake_running = false;
+bool descore_mech_activated = false;
 
 
 ColorSort colorsort = NOSORT;
@@ -167,7 +168,7 @@ void hooks_state_switch(){
 void arm_state_function(){
     while(1){
         if(arm_state == DOWN){ // make arm go down
-            while(get_arm_position() > 1900){
+            while(get_arm_position() > 1600){
                 arm_motor.move(-127);
                 pros::delay(10);
             }
@@ -177,15 +178,16 @@ void arm_state_function(){
                 arm_motor.move(0);
             }
         } else if(arm_state == LOAD){ // make arm go to loading position
+            intake.move(127);
             if(get_arm_position() > 3000){
-                while(get_arm_position() > 2500){
+                while(get_arm_position() > 2200){
                     arm_motor.move(-127);
                     pros::delay(10);
                 }
 
                 arm_motor.move(0);
-            } else if(get_arm_position() < 2000){
-                while(get_arm_position() < 2250){
+            } else if(get_arm_position() < 1800){
+                while(get_arm_position() < 1900){
                     arm_motor.move(127);
                     pros::delay(10);
                 }
@@ -193,8 +195,8 @@ void arm_state_function(){
                 arm_motor.move(0);
             }
         } else if(arm_state == UP){ // make arm go up
-            if(get_arm_position() < 6000){
-                while(get_arm_position() < 3900){
+            if(get_arm_position() < 3000){
+                while(get_arm_position() < 3550){
                     arm_motor.move(127);
                     pros::delay(20);
                     allow_score = false;
@@ -225,5 +227,10 @@ void arm_down_control(){
     }
 }
 
+void stop_hooks(){
+    hooks.move(-127);
+    pros::delay(100);
+    hooks.move(0);
+}
 
 

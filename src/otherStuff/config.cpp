@@ -16,12 +16,10 @@ pros::Rotation horiz_tracker(13);
 pros::adi::Potentiometer arm_rot('E');
 pros::Rotation hooks_rot(3);
 pros::Optical sorter(14);
-pros::adi::DigitalIn arm_down_switch('A');
 
 pros::adi::DigitalOut mogo_mech('B');
-pros::adi::DigitalOut doinker('G');
-pros::adi::DigitalOut rush_arm('C');
-pros::adi::DigitalOut rush_arm_clamp('D');
+pros::adi::DigitalOut doinker('C');
+pros::adi::DigitalOut rush_arm('G');
 
 pros::Motor arm_motor(-1, pros::MotorGears::red);
 pros::Motor intake(6, pros::v5::MotorGears::blue);
