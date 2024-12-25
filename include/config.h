@@ -3,7 +3,6 @@
 #include "lemlib/chassis/chassis.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "pros/adi.hpp"
-#include "pros/colors.hpp"
 #include "pros/optical.hpp"
 #include "pros/rotation.hpp"
 #include "robodash/views/selector.hpp"
@@ -12,10 +11,8 @@
 // pros constructors
 extern pros::Rotation vert_tracker;
 extern pros::Rotation horiz_tracker;
-extern pros::adi::Potentiometer arm_rot;
-extern pros::Rotation hooks_rot;
+extern pros::Rotation arm_rot;
 extern pros::Optical sorter;
-extern pros::adi::DigitalIn arm_down_switch;
 
 extern pros::adi::DigitalOut mogo_mech;
 extern pros::adi::DigitalOut doinker;
@@ -47,3 +44,5 @@ extern rd::Selector selector;
 extern rd::Console console;
 
 extern pros::Controller controller;
+
+extern lemlib::PID arm_pid;

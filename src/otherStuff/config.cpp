@@ -1,5 +1,6 @@
 #include "lemlib/chassis/chassis.hpp"
 #include "config.h"
+#include "lemlib/pid.hpp"
 #include "pros/adi.hpp"
 #include "pros/optical.hpp"
 #include "pros/rotation.hpp"
@@ -11,24 +12,23 @@
 
 
 // config
-pros::Rotation vert_tracker(-2);
-pros::Rotation horiz_tracker(13);
-pros::adi::Potentiometer arm_rot('E');
-pros::Rotation hooks_rot(3);
+pros::Rotation vert_tracker(-6);
+pros::Rotation horiz_tracker(15);
+pros::Rotation arm_rot(10);
 pros::Optical sorter(14);
 
-pros::adi::DigitalOut mogo_mech('B');
-pros::adi::DigitalOut doinker('C');
-pros::adi::DigitalOut rush_arm('G');
+pros::adi::DigitalOut mogo_mech('C');
+pros::adi::DigitalOut doinker('A');
+pros::adi::DigitalOut rush_arm('B');
 
 pros::Motor arm_motor(-1, pros::MotorGears::red);
-pros::Motor intake(6, pros::v5::MotorGears::blue);
-pros::Motor hooks(5, pros::v5::MotorGears::blue);
+pros::Motor intake(-20, pros::v5::MotorGears::blue);
+pros::Motor hooks(-2, pros::v5::MotorGears::blue);
 
 // left motor group
-pros::MotorGroup left_motor_group({8, -9, -10}, pros::MotorGears::blue);
+pros::MotorGroup left_motor_group({-7, 8, -9}, pros::MotorGears::blue);
 // right motor group
-pros::MotorGroup right_motor_group({-15, 19, 11}, pros::MotorGears::blue);
+pros::MotorGroup right_motor_group({3, 4, -5}, pros::MotorGears::blue);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&left_motor_group, // left motor group
@@ -40,7 +40,7 @@ lemlib::Drivetrain drivetrain(&left_motor_group, // left motor group
 );
 
 // imu
-pros::Imu imu(16);
+pros::Imu imu(19);
 
 // tracking wheels
 lemlib::TrackingWheel vertical_tracking_wheel(&vert_tracker, lemlib::Omniwheel::NEW_2, -1);
@@ -55,27 +55,27 @@ lemlib::OdomSensors sensors(&vertical_tracking_wheel, // vertical tracking wheel
 );
 
 // lateral PID controller
-lemlib::ControllerSettings lateral_controller(16, // proportional gain (kP)
-                                              0, // integral gain (kI)
-                                              74, // derivative gain (kD)
-                                              3, // anti windup
-                                              1, // small error range, in inches
+lemlib::ControllerSettings lateral_controller(16,  // proportional gain (kP)
+                                              0,   // integral gain (kI)
+                                              74,  // derivative gain (kD)
+                                              3,   // anti windup
+                                              1,   // small error range, in inches
                                               100, // small error range timeout, in milliseconds
-                                              3, // large error range, in inches
+                                              3,   // large error range, in inches
                                               500, // large error range timeout, in milliseconds
-                                              15 // maximum acceleration (slew)
+                                              15   // maximum acceleration (slew)
 );
 
 // angular PID controller
-lemlib::ControllerSettings angular_controller(4, // proportional gain (kP)
-                                              0, // integral gain (kI)
-                                              31, // derivative gain (kD)
-                                              3, // anti windup
-                                              1, // small error range, in degrees
+lemlib::ControllerSettings angular_controller(4,   // proportional gain (kP)
+                                              0,   // integral gain (kI)
+                                              31,  // derivative gain (kD)
+                                              3,   // anti windup
+                                              1,   // small error range, in degrees
                                               100, // small error range timeout, in milliseconds
-                                              3, // large error range, in degrees
+                                              3,   // large error range, in degrees
                                               500, // large error range timeout, in milliseconds
-                                              0 // maximum acceleration (slew)
+                                              0    // maximum acceleration (slew)
 );
 
 // create the chassis
@@ -91,3 +91,8 @@ rd::Selector selector({
 rd::Console console;
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
+
+lemlib::PID arm_pid(.02, // kp
+                    0, // ki
+                    .0  // kd
+);

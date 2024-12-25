@@ -31,6 +31,7 @@
 #include <memory>
 #include <optional>
 #include <type_traits>
+#include <stdio.h>
 
 namespace pros {
 inline namespace rtos {

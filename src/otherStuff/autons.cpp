@@ -13,7 +13,7 @@ void red_5ring_elim(){};
 void red_mogorush_sawp(){
     alliance_red();
     activate_sorter();
-    chassis.setPose(-50, -59, 90);
+    chassis.setPose(-51, -59, 90);
     // mogo rush
     chassis.moveToPoint(-18, -59, 1000, {.minSpeed = 127});
     rush_arm.set_value(true);
@@ -73,7 +73,7 @@ void blue_sawp(){};
 void blue_5ring_sawp(){};
 void blue_5ring_elim(){};
 void blue_mogorush_sawp(){
-    alliance_blue();
+    alliance_red();
     activate_sorter();
     chassis.setPose(50, -37, 270);
     // mogo rush

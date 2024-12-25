@@ -11,10 +11,11 @@ enum Color{
     RED,
     BLUE
 };
-enum Arm_State{
+enum ArmState{
     UP,
     LOAD,
-    DOWN
+    DOWN,
+    DESCORE
 };
 
 void eject_ring();
@@ -23,12 +24,6 @@ int get_arm_position();
 void sort_red();
 void sort_blue();
 void select_color_to_score();
-void arm_tracking_function();
-void hooks_tracking_function();
-void hooks_state_switch();
-void arm_state_function();
-void arm_up_control();
-void arm_down_control();
 void deactivate_sorter();
 void activate_sorter();
 bool detect_red();
@@ -36,6 +31,13 @@ bool detect_blue();
 void alliance_red();
 void alliance_blue();
 void stop_hooks();
+void check_arm_softstop();
+void arm_state_switch();
+void arm_state_tracker();
+void arm_up();
+void arm_load();
+void arm_down();
+void arm_descore();
 extern bool ejecting;
 extern bool red;
 extern bool arm_moving ;
@@ -54,9 +56,11 @@ extern bool b_pressed;
 extern bool right_pressed;
 extern bool down_pressed;
 extern int arm_velocity;
-extern bool hang_up;
 extern int arm_softstop;
 extern bool score_red;
 extern bool score_blue;
 extern bool intake_running;
-extern bool descore_mech_activated;
+extern float arm_pid_error;
+extern bool loading_pos_activated;
+extern float arm_pid_output;
+extern int arm_state_num;
