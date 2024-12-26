@@ -20,6 +20,7 @@ pros::Optical sorter(14);
 pros::adi::DigitalOut mogo_mech('C');
 pros::adi::DigitalOut doinker('A');
 pros::adi::DigitalOut rush_arm('B');
+pros::adi::DigitalOut ring_rush_mech('D');
 
 pros::Motor arm_motor(-1, pros::MotorGears::red);
 pros::Motor intake(-20, pros::v5::MotorGears::blue);

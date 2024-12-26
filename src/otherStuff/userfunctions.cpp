@@ -128,7 +128,7 @@ void arm_state_switch(){
             if(arm_state == UP){
                 arm_pid_error = 16000 - arm_rot.get_position();
             } else if(arm_state == LOAD){
-                arm_pid_error = 3400 - arm_rot.get_position();
+                arm_pid_error = 3350 - arm_rot.get_position();
             } else if(arm_state == DOWN){
                 arm_pid_error = 0 - arm_rot.get_position();
             } else if(arm_state == DESCORE){

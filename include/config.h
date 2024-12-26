@@ -17,6 +17,7 @@ extern pros::Optical sorter;
 extern pros::adi::DigitalOut mogo_mech;
 extern pros::adi::DigitalOut doinker;
 extern pros::adi::DigitalOut rush_arm;
+extern pros::adi::DigitalOut ring_rush_mech;
 
 extern pros::Motor arm_motor;
 extern pros::Motor intake;
