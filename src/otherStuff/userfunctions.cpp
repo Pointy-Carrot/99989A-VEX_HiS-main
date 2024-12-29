@@ -119,8 +119,8 @@ void arm_load(){
     arm_state = LOAD;
 }
 
-void arm_descore(){
-    arm_state = DESCORE;
+void arm_autonscore(){
+    arm_state = AUTONSCORE;
 }
 
 void arm_state_switch(){
@@ -131,8 +131,8 @@ void arm_state_switch(){
                 arm_pid_error = 3350 - arm_rot.get_position();
             } else if(arm_state == DOWN){
                 arm_pid_error = 0 - arm_rot.get_position();
-            } else if(arm_state == DESCORE){
-                arm_pid_error = 16000 - arm_rot.get_position();
+            } else if(arm_state == AUTONSCORE){
+                arm_pid_error = 14500 - arm_rot.get_position();
             }
 
             arm_pid_output = arm_pid.update(arm_pid_error);
@@ -150,7 +150,7 @@ void arm_state_tracker(){
         } else if(arm_state_num == 3){
             arm_state = UP;
         } else if(arm_state_num == 4){
-            arm_state = DESCORE;
+            arm_state = AUTONSCORE;
         }
         pros::delay(10);
     }

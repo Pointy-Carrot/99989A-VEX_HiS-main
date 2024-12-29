@@ -6,10 +6,11 @@
 #include "lemlib/chassis/chassis.hpp"
 
 ASSET(red_mogorush1_txt);
+ASSET(blue_ringrush_6ring1_txt);
 
 void red_sawp(){};
-void red_5ring_sawp(){};
-void red_5ring_elim(){};
+void red_ringrush_wallstake(){};
+void red_ringrush_bartouch(){};
 void red_mogorush_sawp(){
     alliance_red();
     activate_sorter();
@@ -70,8 +71,57 @@ void red_mogorush_sawp(){
 void red_mogorush_elim(){};
 void red_sig_sawp(){};
 void blue_sawp(){};
-void blue_5ring_sawp(){};
-void blue_5ring_elim(){};
+void blue_ringrush_wallstake(){
+    alliance_blue();
+    chassis.setPose(52, 30, 270);
+    arm_state_num = 1;
+    // rushing mid rings
+    chassis.moveToPoint(9, 46, 1250);
+    ring_rush_mech.set_value(true);
+    chassis.moveToPoint(42, 48, 1000, {.forwards = false});
+    chassis.waitUntilDone();
+    ring_rush_mech.set_value(false);
+    pros::delay(250);
+    chassis.moveToPoint(48, 36, 500, {.forwards = false});
+    // grabbing mogo
+    chassis.turnToPoint(18, 20, 500, {.forwards = false});
+    chassis.moveToPoint(18, 20, 1000, {.forwards = false});
+    chassis.waitUntilDone();
+    mogo_mech.set_value(true);
+    pros::delay(250);
+    // scoring on mogo
+    chassis.turnToHeading(0, 500);
+    chassis.moveToPoint(28, 48, 1000);
+    intake.move(127);
+    hooks.move(127);
+    chassis.moveToPoint(14, 56, 1000);
+    pros::delay(250);
+    // grabbing corner ring
+    chassis.moveToPoint(56, 56, 1000, {.forwards = false});
+    chassis.turnToPoint(70, 70, 500);
+    chassis.moveToPoint(64, 64, 500);
+    chassis.waitUntilDone();
+    chassis.moveToPoint(48, 48, 1000, {.forwards = false});
+    // loading ring in LB
+    chassis.turnToPoint(64, 30, 750);
+    chassis.moveToPoint(64, 30, 1000);
+    chassis.waitUntil(20);
+    arm_state_num = 2;
+    chassis.waitUntilDone();
+    pros::delay(500);
+    // scoring wall stake
+    chassis.moveToPoint(24, 48, 1000, {.forwards = false});
+    chassis.turnToPoint(8, 60, 500);
+    hooks.move(-127);
+    pros::delay(50);
+    hooks.move(0);
+    intake.move(0);
+    chassis.moveToPoint(10, 59, 750);
+    chassis.turnToHeading(315, 250);
+    chassis.waitUntilDone();
+    arm_state_num = 3;
+};
+void blue_ringrush_bartouch(){};
 void blue_mogorush_sawp(){
     alliance_red();
     activate_sorter();

@@ -15,7 +15,7 @@ enum ArmState{
     UP,
     LOAD,
     DOWN,
-    DESCORE
+    AUTONSCORE
 };
 
 void eject_ring();
@@ -37,7 +37,7 @@ void arm_state_tracker();
 void arm_up();
 void arm_load();
 void arm_down();
-void arm_descore();
+void arm_autonscore();
 extern bool ejecting;
 extern bool red;
 extern bool arm_moving ;

@@ -17,7 +17,6 @@ ASSET(path1_txt);
 
 
 
-
 // initialize function. Runs on program startup
 void initialize() {
     chassis.calibrate(); // calibrate sensors
@@ -73,8 +72,8 @@ void autonomous() {
     //blue_right_aStake_bar(); //-> Partial AWP except for moving partner off line. Start Bordering two tiles, facing 0 deg.
     //blue_left_rush(); //-> Rush mid mogo.
 
-    red_mogorush_sawp();
-    // prog_skills();
+    // red_mogorush_sawp();
+    blue_ringrush_wallstake();
     
 }
 
@@ -166,7 +165,7 @@ void opcontrol() {
         }
 
         if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)){
-            if(arm_state_num < 4){
+            if(arm_state_num < 3){
                 arm_state_num ++;
             }
         } else if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)){
